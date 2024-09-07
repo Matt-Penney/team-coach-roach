@@ -18,10 +18,12 @@ const links = [{
 <template>
   <UHeader :links="links">
     <template #logo>
-      Nuxt UI Pro <UBadge
+      Team Coach Roach
+      <UBadge
         label="SaaS"
         variant="subtle"
         class="mb-0.5"
+        to="/"
       />
     </template>
 

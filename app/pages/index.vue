@@ -19,6 +19,7 @@ useSeoMeta({
       :title="page.hero.title"
       :description="page.hero.description"
       :links="page.hero.links"
+      :orientation="page.hero.orientation"
     >
       <div class="absolute inset-0 landing-grid z-[-1] [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]" />
 
@@ -110,16 +111,19 @@ useSeoMeta({
 
 <style scoped>
 .landing-grid {
-  background-size: 100px 100px;
+  /* background-size: 100px 100px; */
+  /* background-size: 1428px 952px; */
+  background-size: 100% 100%;
   background-image:
-    linear-gradient(to right, rgb(var(--color-gray-200)) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(var(--color-gray-200)) 1px, transparent 1px);
+    url('https://teamcoachroach.com/wp-content/uploads/2022/09/LVID6640-scaled.jpg')
+    /* linear-gradient(to right, rgb(var(--color-gray-200)) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--color-gray-200)) 1px, transparent 1px); */
 }
 .dark {
   .landing-grid {
     background-image:
-      linear-gradient(to right, rgb(var(--color-gray-800)) 1px, transparent 1px),
-      linear-gradient(to bottom, rgb(var(--color-gray-800)) 1px, transparent 1px);
+      /* linear-gradient(to right, rgb(var(--color-gray-800)) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--color-gray-800)) 1px, transparent 1px); */
   }
 }
 </style>

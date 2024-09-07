@@ -1,15 +1,16 @@
-title: Nuxt UI Pro - SaaS template
+title: Team Coach Roach - Online Coach
 description: Nuxt UI Pro is a collection of premium Vue components built on top of Nuxt UI to create beautiful & responsive Nuxt applications in minutes.
 navigation: false
 hero:
-  title: Build your SaaS in seconds
-  description: This template demonstrates most of Nuxt UI Pro's components. It's a great starting point to build your own SaaS.
+  title: Transformation Coaching Service
+  description: Over 100 Worldwide Transformations
+  orientation: "horizontal"
   headline:
     label: Made with Nuxt UI Pro
     to: https://ui.nuxt.com/pro
     icon: i-heroicons-arrow-top-right-on-square-20-solid
   links:
-    - label: Get started
+    - label: Enquire Here
       to: '/signup'
       size: xl
       color: black

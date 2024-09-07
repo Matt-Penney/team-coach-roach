@@ -10,7 +10,7 @@ useHead({
     { key: 'theme-color', name: 'theme-color', content: color }
   ],
   link: [
-    { rel: 'icon', href: '/favicon.ico' }
+    { rel: 'icon', href: 'https://teamcoachroach.com/wp-content/uploads/2022/09/Asset-2@216x.png' }
   ],
   htmlAttrs: {
     lang: 'en'
