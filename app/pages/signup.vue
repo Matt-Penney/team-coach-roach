@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const supabase = useSupabaseClient()
+
 definePageMeta({
   layout: 'auth'
 })
@@ -26,6 +28,7 @@ const fields = [{
 
 const validate = (state: any) => {
   const errors = []
+  if (!state.name) errors.push({ path: 'name', message: 'Name is required' })
   if (!state.email) errors.push({ path: 'email', message: 'Email is required' })
   if (!state.password) errors.push({ path: 'password', message: 'Password is required' })
   return errors
@@ -40,8 +43,14 @@ const providers = [{
   }
 }]
 
-function onSubmit(data: any) {
-  console.log('Submitted', data)
+async function onSubmit(user: any) {
+  console.log('Submitted', user)
+
+  const { error } = await supabase.auth.signUp({
+    email: user.email,
+    password: user.password
+  })
+  if (error) console.log(error)
 }
 </script>
 

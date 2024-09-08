@@ -9,12 +9,11 @@ export async function createAccount(data: CreateAccount) {
 
 export async function getAccountById(id: SelectAccount['id']): Promise<
   Array<{
+    updated_at: Date | null
     name: string
     email: string
-    password: string | null
-    role: string | null
     age: number | null
-    mobilePhoneNumber: number | null
+    mobilePhoneNumber: string | null
   }>
 > {
   return db.select().from(account).where(eq(account.id, id))

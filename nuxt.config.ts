@@ -10,7 +10,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxthq/studio',
     '@vueuse/nuxt',
-    'nuxt-og-image'
+    'nuxt-og-image',
+    '@nuxtjs/supabase'
   ],
 
   hooks: {
@@ -57,7 +58,17 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-07-11',
 
   devServer: {
-    host: '0.0.0.0',
+    host: 'localhost',
     port: 3000
+  },
+
+  supabase: {
+    redirectOptions: {
+      login: '/login',
+      callback: '/', // this should go the dashboard
+      include: undefined,
+      exclude: ['/', '/signup'],
+      cookieRedirect: false
+    }
   }
 })
