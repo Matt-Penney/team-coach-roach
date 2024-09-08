@@ -115,7 +115,7 @@ const colors = computed(() => defaultColors.value.map(color => ({ ...color, acti
           <UDivider />
 
           <UDashboardSidebarLinks
-            :links="[{ label: 'Colors', draggable: true, children: colors }]"
+            :links="[{ label: 'Colours', draggable: true, children: colors }]"
             @update:links="colors => defaultColors = colors"
           />
 

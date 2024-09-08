@@ -221,7 +221,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
       </div>
     </UDashboardSection>
 
-    <!-- ~/components/settings/DeleteAccountModal.vue -->
-    <SettingsDeleteAccountModal v-model="isDeleteAccountModalOpen" />
+    <!-- ~/components/Dashboard/settings/DeleteAccountModal.vue -->
+    <DashboardSettingsDeleteAccountModal v-model="isDeleteAccountModalOpen" />
   </UDashboardPanelContent>
 </template>

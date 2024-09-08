@@ -60,7 +60,8 @@ async function onSubmit(user: any) {
     password: user.password,
     options: {
       data: {
-        name: user.name
+        name: user.name,
+        email: user.email
       },
       emailRedirectTo: 'http://localhost:3000/confirm' // doesnt work so I used a watch
     }
