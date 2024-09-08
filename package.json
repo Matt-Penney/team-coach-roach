@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-ui-pro-template-saas",
+  "name": "team-coach-roach",
   "private": true,
   "type": "module",
   "scripts": {
@@ -19,13 +19,17 @@
     "@nuxt/fonts": "^0.7.2",
     "@nuxt/image": "^1.7.0",
     "@nuxt/ui-pro": "^1.4.1",
+    "@unovis/ts": "^1.4.4",
+    "@unovis/vue": "^1.4.4",
     "@supabase/supabase-js": "^2.45.3",
     "@vueuse/nuxt": "^10.11.1",
+    "date-fns": "^3.6.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "nuxt": "^3.12.4",
     "nuxt-og-image": "^3.0.0-rc.65",
-    "postgres": "^3.4.4"
+    "postgres": "^3.4.4",
+    "v-calendar": "^3.1.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^0.5.1",

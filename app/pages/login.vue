@@ -1,4 +1,5 @@
 <script setup lang="ts">
+
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 definePageMeta({
@@ -12,9 +13,11 @@ useSeoMeta({
 watch(user, () => {
   if (user.value) {
     // Redirect to protected page
-    return navigateTo('/')
+    return navigateTo('/dashboard')
   }
 }, { immediate: true })
+
+let loading = false
 
 const fields = [{
   name: 'email',
@@ -45,6 +48,7 @@ const providers = [{
 }]
 
 async function onSubmit(user: any) {
+  loading = true
   console.log('Submitted', user)
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -52,6 +56,8 @@ async function onSubmit(user: any) {
     password: user.password
   })
   if (error) console.log('Error - ' + error)
+
+  loading = false
 }
 </script>
 
@@ -68,6 +74,7 @@ async function onSubmit(user: any) {
       icon="i-heroicons-lock-closed"
       :ui="{ base: 'text-center', footer: 'text-center' }"
       :submit-button="{ trailingIcon: 'i-heroicons-arrow-right-20-solid' }"
+      :loading="loading"
       @submit="onSubmit"
     >
       <template #description>
@@ -82,6 +89,14 @@ async function onSubmit(user: any) {
           to="/"
           class="text-primary font-medium"
         >Forgot password?</NuxtLink>
+      </template>
+
+      <template #validation>
+        <UAlert
+          color="red"
+          icon="i-heroicons-information-circle-20-solid"
+          title="Error signing in"
+        />
       </template>
 
       <template #footer>

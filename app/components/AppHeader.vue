@@ -20,25 +20,31 @@ const links = [{
 }, {
   label: 'Blog',
   to: '/blog'
+},
+{
+  label: 'Dashboard TEMP',
+  to: '/dashboard'
 }]
 </script>
 
 <template>
   <UHeader :links="links">
     <template #logo>
-      Team Coach Roach
-      <UBadge
-        label="SaaS"
-        variant="subtle"
-        class="mb-0.5"
+      <NuxtLink
         to="/"
-      />
+      >
+        <img
+          src="https://teamcoachroach.com/wp-content/uploads/2022/09/Asset-2@216x.png"
+          class="max-w-24"
+        >
+      </NuxtLink>
     </template>
 
     <template
       v-if="user"
       #right
     >
+      <!-- make this better and use the 'account' type interface -->
       <p>Hello, {{ user.user_metadata.name }}</p>
       <UButton
         v-if="user"
