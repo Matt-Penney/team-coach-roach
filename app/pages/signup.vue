@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
+const user = useSupabaseUser()
 
 definePageMeta({
   layout: 'auth'
@@ -8,6 +9,13 @@ definePageMeta({
 useSeoMeta({
   title: 'Sign up'
 })
+
+watch(user, () => {
+  if (user.value) {
+    // Redirect to protected page
+    return navigateTo('/confirm')
+  }
+}, { immediate: true })
 
 const fields = [{
   name: 'name',
@@ -46,11 +54,18 @@ const providers = [{
 async function onSubmit(user: any) {
   console.log('Submitted', user)
 
+  // check that the email isnt already in use TO DO
   const { error } = await supabase.auth.signUp({
     email: user.email,
-    password: user.password
+    password: user.password,
+    options: {
+      data: {
+        name: user.name
+      },
+      emailRedirectTo: 'http://localhost:3000/confirm' // doesnt work so I used a watch
+    }
   })
-  if (error) console.log(error)
+  if (error) console.log('Error - ' + error)
 }
 </script>
 

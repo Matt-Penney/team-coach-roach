@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import type { NavItem } from '@nuxt/content'
 
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
+
+const logout = async () => {
+  await supabase.auth.signOut()
+  navigateTo('/')
+}
+
 const navigation = inject<Ref<NavItem[]>>('navigation', ref([]))
 
 const links = [{
@@ -27,7 +35,22 @@ const links = [{
       />
     </template>
 
-    <template #right>
+    <template
+      v-if="user"
+      #right
+    >
+      <p>Hello, {{ user.user_metadata.name }}</p>
+      <UButton
+        v-if="user"
+        label="Logout"
+        color="gray"
+        @click="logout"
+      />
+    </template>
+    <template
+      v-else
+      #right
+    >
       <UButton
         label="Sign in"
         color="gray"

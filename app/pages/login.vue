@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const supabase = useSupabaseClient()
+const user = useSupabaseUser()
 definePageMeta({
   layout: 'auth'
 })
@@ -6,6 +8,13 @@ definePageMeta({
 useSeoMeta({
   title: 'Login'
 })
+
+watch(user, () => {
+  if (user.value) {
+    // Redirect to protected page
+    return navigateTo('/')
+  }
+}, { immediate: true })
 
 const fields = [{
   name: 'email',
@@ -35,8 +44,14 @@ const providers = [{
   }
 }]
 
-function onSubmit(data: any) {
-  console.log('Submitted', data)
+async function onSubmit(user: any) {
+  console.log('Submitted', user)
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: user.password
+  })
+  if (error) console.log('Error - ' + error)
 }
 </script>
 

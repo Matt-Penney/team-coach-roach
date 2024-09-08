@@ -13,3 +13,20 @@ export interface BlogPost extends ParsedContent {
     avatar?: Avatar
   } & Link)[]
 }
+
+export type Period = 'daily' | 'weekly' | 'monthly'
+
+export interface DateRange {
+  startDate: Date
+  endDate: Date
+}
+
+export interface Account {
+  id: number
+  name: string
+  email: string
+  age: number
+  mobilePhoneNumber: string
+  role: 'client' | 'coach'
+  avatar?: Avatar
+}
