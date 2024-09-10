@@ -4,7 +4,7 @@ import type { FormError, FormSubmitEvent } from '#ui/types'
 const emit = defineEmits(['close'])
 
 const state = reactive({
-  role: 'client',
+  memberType: 'client',
   email: undefined
 })
 
@@ -44,11 +44,11 @@ async function onSubmit(event: FormSubmitEvent<any>) {
     </UFormGroup>
 
     <UFormGroup
-      label="Role"
-      name="role"
+      label="Member Type"
+      name="memberType"
     >
       <USelectMenu
-        v-model="state.role"
+        v-model="state.memberType"
         :options="['client', 'coach']"
         :ui-menu="{ select: 'capitalize', option: { base: 'capitalize' } }"
       />

@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { Member } from '~/types'
+import type { Member, MemberType } from '~/types'
 
-const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
+const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 
 const model = defineModel({
   type: Object as PropType<Member>,
   required: true
 })
 
-function onMemberChange(member: Member, role: string) {
+function onMemberChange(member: Member, memberType: MemberType) {
   // Do something with data
   // TO DO add a URL param using the username and use that to drive the current dashboard showing a clients info
-  console.log(member.username, role)
+  console.log(member.username, memberType)
 }
 </script>
 

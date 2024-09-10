@@ -43,7 +43,7 @@ const categories = computed(() => [{
   items: [
     { shortcuts: ['G', 'H'], name: 'Go to Home' },
     { shortcuts: ['G', 'I'], name: 'Go to Inbox' },
-    { shortcuts: ['G', 'U'], name: 'Go to Users' },
+    { shortcuts: ['G', 'A'], name: 'Go to Accounts' },
     { shortcuts: ['G', 'S'], name: 'Go to Settings' }
   ]
 }, {

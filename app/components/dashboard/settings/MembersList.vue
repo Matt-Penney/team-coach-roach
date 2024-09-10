@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Member } from '~/types'
+import type { Member, MemberType } from '~/types'
 
 defineProps({
   members: {
@@ -19,9 +19,9 @@ function getItems(member: Member) {
   }]]
 }
 
-function onRoleChange(member: Member, role: string) {
+function onMemberTypeChange(member: Member, memberType: MemberType) {
   // Do something with data
-  console.log(member.username, role)
+  console.log(member.username, memberType)
 }
 </script>
 
@@ -53,11 +53,11 @@ function onRoleChange(member: Member, role: string) {
 
       <div class="flex items-center gap-3">
         <USelectMenu
-          :model-value="member.role"
+          :model-value="member.memberType"
           :options="['member', 'coach']"
           color="white"
           :ui-menu="{ select: 'capitalize', option: { base: 'capitalize' } }"
-          @update:model-value="onRoleChange(member, $event)"
+          @update:model-value="onMemberTypeChange(member, $event)"
         />
 
         <UDropdown

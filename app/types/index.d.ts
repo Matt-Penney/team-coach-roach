@@ -23,6 +23,7 @@ export interface DateRange {
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 export type MemberType = 'client' | 'coach' | 'admin'
+
 export interface Account {
   accountId: number
   name: string
@@ -33,18 +34,16 @@ export interface Account {
   memberType?: MemberType
   userStatus: UserStatus
   avatar?: Avatar
+  location?: string
 }
+
+export interface Member extends Account {
+  role?: MemberType
+}
+
+// export type UserWithoutPassword = Omit<User, 'password'>
 
 // Dashboard shit TO DO aim to remove and use API to get instead
-
-export interface Member {
-  name: string
-  username: string
-  role: 'client' | 'coach' | 'admin' | 'none'
-  avatar: Avatar
-}
-
-export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 
 export interface User {
   id: number

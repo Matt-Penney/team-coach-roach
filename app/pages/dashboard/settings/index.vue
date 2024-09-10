@@ -54,7 +54,7 @@ async function onFileChange(e: Event) {
 
   const file = files.value[0]
   const fileExt = file.name.split('.').pop()
-  const fileName = `avatar.${fileExt}` // maybe just keep the file name, for validation and avoid duplicate files
+  const fileName = `avatar.${fileExt}`
   const filePath = `/${account.value.username}/${fileName}`
 
   try {
@@ -70,7 +70,7 @@ async function onFileChange(e: Event) {
       state.avatar = URL.createObjectURL(file)
       await supabase.from('account')
         .update({ avatarUrl: filePath })
-        .eq('id', user.value.id) // TO DO fix avatarURL
+        .eq('id', user.value.id)
     }
     toast.add({ title: 'Avatar updated successfully', icon: 'i-heroicons-check-circle' })
   } catch (error) {

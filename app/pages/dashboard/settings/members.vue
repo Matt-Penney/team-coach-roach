@@ -5,7 +5,7 @@ definePageMeta({
   layout: 'dashboard'
 })
 
-const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
+const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 
 const q = ref('')
 const isInviteModalOpen = ref(false)

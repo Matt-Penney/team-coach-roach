@@ -27,13 +27,13 @@ const links = [{
     shortcuts: ['G', 'I']
   }
 }, {
-  id: 'users',
-  label: 'Users',
+  id: 'accounts',
+  label: 'Accounts',
   icon: 'i-heroicons-user-group',
-  to: '/dashboard/users',
+  to: '/dashboard/accounts',
   tooltip: {
-    text: 'Users',
-    shortcuts: ['G', 'U']
+    text: 'Accounts',
+    shortcuts: ['G', 'A']
   }
 }, {
   id: 'settings',

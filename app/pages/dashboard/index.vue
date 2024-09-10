@@ -29,18 +29,23 @@ const items = [[{
   icon: 'i-heroicons-paper-airplane',
   to: '/dashboard/inbox'
 }, {
-  label: 'New user',
+  label: 'New account',
   icon: 'i-heroicons-user-plus',
-  to: '/dashboard/users'
+  to: '/dashboard/accounts' // TO DO wanna change this to accounts but need to fix routing
 }]]
 
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
+
 const member = ref<Member>({
+  accountId: 999,
   name: 'Matt Penney',
+  email: 'blah@blah.com',
   username: 'mattpenney00',
-  role: 'coach',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
+  mobilePhoneNumber: '07111111222',
+  memberType: 'coach',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' },
+  userStatus: 'subscribed'
 }) // make it just get their own logged in account, clients shouldnt be able to select/see other users
 
 useSeoMeta({

@@ -56,7 +56,6 @@ const providers = [{
 async function onSubmit(user: any) {
   console.log('Submitted', user)
 
-  // check that the email isnt already in use TO DO - it might be built in
   try {
     loading.value = true
     const { error } = await supabase.auth.signUp({

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { User } from '~/types'
+import type { Account } from '~/types'
 
 definePageMeta({
   layout: 'dashboard'
 })
 
 const defaultColumns = [{
-  key: 'id',
+  key: 'account_id',
   label: '#'
 }, {
   key: 'name',
@@ -16,16 +16,19 @@ const defaultColumns = [{
   key: 'email',
   label: 'Email',
   sortable: true
-}, {
+}, /* {
   key: 'location',
   label: 'Location'
+}, */ {
+  key: 'mobilePhoneNumber',
+  label: 'Mobile Number'
 }, {
   key: 'status',
   label: 'Status'
 }]
 
 const q = ref('')
-const selected = ref<User[]>([])
+const selected = ref<Account[]>([])
 const selectedColumns = ref(defaultColumns)
 const selectedStatuses = ref([])
 const selectedLocations = ref([])
@@ -37,24 +40,24 @@ const columns = computed(() => defaultColumns.filter(column => selectedColumns.v
 
 const query = computed(() => ({ q: q.value, statuses: selectedStatuses.value, locations: selectedLocations.value, sort: sort.value.column, order: sort.value.direction }))
 
-const { data: users, pending } = await useFetch<User[]>('/api/users', { query, default: () => [] })
+const { data: accounts, pending } = await useFetch<Account[]>('/api/accounts', { query, default: () => [] })
 
-const defaultLocations = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.location)) {
-    acc.push(user.location)
+// const defaultLocations = accounts.value.reduce((acc, account) => {
+//   if (!acc.includes(account.location)) {
+//     acc.push(account.location)
+//   }
+//   return acc
+// }, [] as string[])
+
+const defaultStatuses = accounts.value.reduce((acc, account) => {
+  if (!acc.includes(account.userStatus)) {
+    acc.push(account.userStatus)
   }
   return acc
 }, [] as string[])
 
-const defaultStatuses = users.value.reduce((acc, user) => {
-  if (!acc.includes(user.status)) {
-    acc.push(user.status)
-  }
-  return acc
-}, [] as string[])
-
-function onSelect(row: User) {
-  const index = selected.value.findIndex(item => item.id === row.id)
+function onSelect(row: Account) {
+  const index = selected.value.findIndex(item => item.accountId === row.accountId)
   if (index === -1) {
     selected.value.push(row)
   } else {
@@ -73,8 +76,8 @@ defineShortcuts({
   <UDashboardPage>
     <UDashboardPanel grow>
       <UDashboardNavbar
-        title="Users"
-        :badge="users.length"
+        title="Accounts"
+        :badge="accounts.length"
       >
         <template #right>
           <UInput
@@ -82,7 +85,7 @@ defineShortcuts({
             v-model="q"
             icon="i-heroicons-funnel"
             autocomplete="off"
-            placeholder="Filter users..."
+            placeholder="Filter accounts..."
             class="hidden lg:block"
             @keydown.esc="$event.target.blur()"
           >
@@ -92,7 +95,7 @@ defineShortcuts({
           </UInput>
 
           <UButton
-            label="New user"
+            label="New account"
             trailing-icon="i-heroicons-plus"
             color="gray"
             @click="isNewUserModalOpen = true"
@@ -110,13 +113,13 @@ defineShortcuts({
             :options="defaultStatuses"
             :ui-menu="{ option: { base: 'capitalize' } }"
           />
-          <USelectMenu
+          <!-- <USelectMenu
             v-model="selectedLocations"
             icon="i-heroicons-map-pin"
             placeholder="Location"
             :options="defaultLocations"
             multiple
-          />
+          /> -->
         </template>
 
         <template #right>
@@ -136,8 +139,8 @@ defineShortcuts({
 
       <UDashboardModal
         v-model="isNewUserModalOpen"
-        title="New user"
-        description="Add a new user to your database"
+        title="New account"
+        description="Add a new account to your database"
         :ui="{ width: 'sm:max-w-md' }"
       >
         <!-- ~/components/users/Dashboard/UsersForm.vue -->
@@ -147,7 +150,7 @@ defineShortcuts({
       <UTable
         v-model="selected"
         v-model:sort="sort"
-        :rows="users"
+        :rows="accounts"
         :columns="columns"
         :loading="pending"
         sort-mode="manual"
@@ -169,8 +172,8 @@ defineShortcuts({
 
         <template #status-data="{ row }">
           <UBadge
-            :label="row.status"
-            :color="row.status === 'subscribed' ? 'green' : row.status === 'bounced' ? 'orange' : 'red'"
+            :label="row.userStatus"
+            :color="row.userStatus === 'subscribed' ? 'green' : row.userStatus === 'bounced' ? 'orange' : 'red'"
             variant="subtle"
             class="capitalize"
           />
