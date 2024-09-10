@@ -1,6 +1,7 @@
 import { integer, pgEnum, pgSchema, pgTable, serial, text, timestamp, uuid } from 'drizzle-orm/pg-core'
 
-export const roleEnum = pgEnum('role', ['none', 'client', 'coach', 'admin'])
+export const memberTypeEnum = pgEnum('memberType', ['client', 'coach', 'admin'])
+export const userStatusEnum = pgEnum('userStatus', ['subscribed', 'unsubscribed', 'bounced'])
 
 const authSchema = pgSchema('auth')
 export const users = authSchema.table('users', {
@@ -16,7 +17,8 @@ export const account = pgTable('account', {
   age: integer('age'),
   mobilePhoneNumber: text('mobilePhoneNumber'),
   username: text('username').unique(),
-  role: roleEnum('role').default(roleEnum.enumValues[0]).notNull(),
+  memberType: memberTypeEnum('memberType'),
+  userStatus: userStatusEnum('userStatus').default(userStatusEnum.enumValues[1]).notNull(),
   avatarUrl: text('avatarUrl')
 })
 

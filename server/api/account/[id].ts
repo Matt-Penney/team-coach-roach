@@ -9,5 +9,5 @@ export default eventHandler(async (event) => {
     console.log(error)
     return false
   }
-  return { account: data }
+  return { account: data } // TO DO doesnt work
 })

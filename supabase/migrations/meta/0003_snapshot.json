@@ -1,0 +1,160 @@
+{
+  "id": "e6337f9c-1274-434a-aef5-8b55372f4515",
+  "prevId": "b488d178-ef88-41cd-a068-24269c143fb4",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.account": {
+      "name": "account",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "mobilePhoneNumber": {
+          "name": "mobilePhoneNumber",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memberType": {
+          "name": "memberType",
+          "type": "memberType",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "userStatus": {
+          "name": "userStatus",
+          "type": "userStatus",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'unsubscribed'"
+        },
+        "avatarUrl": {
+          "name": "avatarUrl",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "account_id_users_id_fk": {
+          "name": "account_id_users_id_fk",
+          "tableFrom": "account",
+          "tableTo": "users",
+          "schemaTo": "auth",
+          "columnsFrom": [
+            "id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "account_email_unique": {
+          "name": "account_email_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "email"
+          ]
+        },
+        "account_username_unique": {
+          "name": "account_username_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "username"
+          ]
+        }
+      }
+    },
+    "auth.users": {
+      "name": "users",
+      "schema": "auth",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "public.memberType": {
+      "name": "memberType",
+      "schema": "public",
+      "values": [
+        "client",
+        "coach",
+        "admin"
+      ]
+    },
+    "public.userStatus": {
+      "name": "userStatus",
+      "schema": "public",
+      "values": [
+        "subscribed",
+        "unsubscribed",
+        "bounced"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

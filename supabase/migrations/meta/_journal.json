@@ -22,6 +22,13 @@
       "when": 1725986219124,
       "tag": "0002_wet_rictor",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1725995220035,
+      "tag": "0003_daffy_switch",
+      "breakpoints": true
     }
   ]
 }

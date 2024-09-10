@@ -21,15 +21,21 @@ export interface DateRange {
   endDate: Date
 }
 
+export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
+export type MemberType = 'client' | 'coach' | 'admin'
 export interface Account {
-  id: number
+  accountId: number
   name: string
   email: string
-  age: number
-  mobilePhoneNumber: string
+  age?: number
+  mobilePhoneNumber?: string
+  username?: string
+  memberType?: MemberType
+  userStatus: UserStatus
+  avatar?: Avatar
 }
 
-// Dashboard shit
+// Dashboard shit TO DO aim to remove and use API to get instead
 
 export interface Member {
   name: string
