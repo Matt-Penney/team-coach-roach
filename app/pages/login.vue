@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import type { FormError } from '#ui/types'
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
+
 definePageMeta({
   layout: 'auth'
 })
@@ -13,11 +15,11 @@ useSeoMeta({
 watch(user, () => {
   if (user.value) {
     // Redirect to protected page
-    return navigateTo('/dashboard')
+    return navigateTo('/confirm')
   }
 }, { immediate: true })
 
-let loading = false
+const loading = ref(false)
 
 const fields = [{
   name: 'email',
@@ -31,7 +33,7 @@ const fields = [{
   placeholder: 'Enter your password'
 }]
 
-const validate = (state: any) => {
+const validate = (state: any): FormError[] => {
   const errors = []
   if (!state.email) errors.push({ path: 'email', message: 'Email is required' })
   if (!state.password) errors.push({ path: 'password', message: 'Password is required' })
@@ -48,16 +50,20 @@ const providers = [{
 }]
 
 async function onSubmit(user: any) {
-  loading = true
-  console.log('Submitted', user)
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email: user.email,
-    password: user.password
-  })
-  if (error) console.log('Error - ' + error)
-
-  loading = false
+  // console.log('Submitted', user)
+  try {
+    loading.value = true
+    const { error } = await supabase.auth.signInWithPassword({
+      email: user.email,
+      password: user.password
+    })
+    if (error) throw error
+  } catch (error) {
+    // console.log('Error - ' + error)
+    alert(error.error_description || error.message)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
@@ -68,6 +74,7 @@ async function onSubmit(user: any) {
     <UAuthForm
       :fields="fields"
       :validate="validate"
+      validate-on="onSubmit"
       :providers="providers"
       title="Welcome back"
       align="top"
@@ -89,14 +96,6 @@ async function onSubmit(user: any) {
           to="/"
           class="text-primary font-medium"
         >Forgot password?</NuxtLink>
-      </template>
-
-      <template #validation>
-        <UAlert
-          color="red"
-          icon="i-heroicons-information-circle-20-solid"
-          title="Error signing in"
-        />
       </template>
 
       <template #footer>

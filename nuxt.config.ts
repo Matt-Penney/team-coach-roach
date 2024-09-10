@@ -70,8 +70,9 @@ export default defineNuxtConfig({
   supabase: {
     redirectOptions: {
       login: '/login',
-      callback: '/confirm', // confirm redirect into dsahboard, use cookies for this eventually too
-      exclude: ['/', '/signup']
+      callback: '/confirm', // confirm redirect into dashboard, use cookies for this eventually too
+      exclude: ['/', '/signup'],
+      cookieRedirect: true
     }
   }
 })

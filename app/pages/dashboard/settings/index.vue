@@ -1,21 +1,36 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
+const supabase = useSupabaseClient()
+const loading = ref(true)
+const account = ref(null)
+const files = ref()
+
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard' // might be able to pass it through props or something rather than defining this on EACH page
 })
+
+loading.value = true
+const user = useSupabaseUser()
+
+const { data } = await supabase
+  .from('account')
+  .select('*')
+  .eq('id', user.value?.id)
+  .single()
+if (data) {
+  account.value = data
+}
+loading.value = false
 
 const fileRef = ref<HTMLInputElement>()
 const isDeleteAccountModalOpen = ref(false)
 
 const state = reactive({
-  name: 'Benjamin Canac',
-  email: 'ben@nuxtlabs.com',
-  username: 'benjamincanac',
-  avatar: '',
-  bio: '',
-  password_current: '',
-  password_new: ''
+  name: account.value.name,
+  email: account.value.email,
+  username: account.value.username,
+  avatar: account.value.avatarUrl
 })
 
 const toast = useToast()
@@ -28,14 +43,42 @@ function validate(state: any): FormError[] {
   return errors
 }
 
-function onFileChange(e: Event) {
-  const input = e.target as HTMLInputElement
+async function onFileChange(e: Event) {
+  files.value = e.target.files
 
-  if (!input.files?.length) {
-    return
+  if (!files.value || files.value.length === 0) {
+    throw new Error('You must select an image to upload.')
   }
 
-  state.avatar = URL.createObjectURL(input.files[0])
+  if (account.value.username !== state.username) return // TO DO probs save profile then upload avatar idk
+
+  const file = files.value[0]
+  const fileExt = file.name.split('.').pop()
+  const fileName = `avatar.${fileExt}` // maybe just keep the file name, for validation and avoid duplicate files
+  const filePath = `/${account.value.username}/${fileName}`
+
+  try {
+    loading.value = true
+    const { error } = await supabase.storage.from('avatars')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: true
+      }) // TO DO replace existing file/dupes
+
+    if (error) throw error
+    else {
+      state.avatar = URL.createObjectURL(file)
+      await supabase.from('account')
+        .update({ avatarUrl: filePath })
+        .eq('id', user.value.id) // TO DO fix avatarURL
+    }
+    toast.add({ title: 'Avatar updated successfully', icon: 'i-heroicons-check-circle' })
+  } catch (error) {
+    console.log('Error - ' + error)
+    toast.add({ title: 'Avatar upload failed', icon: 'i-heroicons-exclamation-circle', color: 'red' })
+  } finally {
+    loading.value = false
+  }
 }
 
 function onFileClick() {
@@ -46,7 +89,38 @@ async function onSubmit(event: FormSubmitEvent<any>) {
   // Do something with data
   console.log(event.data)
 
-  toast.add({ title: 'Profile updated', icon: 'i-heroicons-check-circle' })
+  try {
+    loading.value = true
+    const { data, error } = await supabase
+      .from('account')
+      .update({ name: state.name, email: state.email, username: state.username })
+      .eq('id', user.value.id)
+      .select()
+    if (error) throw error
+    else account.value = data
+    toast.add({ title: 'Profile updated successfully', icon: 'i-heroicons-check-circle' })
+  } catch (error) {
+    console.log('Error - ' + error)
+    toast.add({ title: 'Profile update failed', icon: 'i-heroicons-exclamation-circle', color: 'red' })
+  } finally {
+    loading.value = false
+  }
+
+  // TO DO when they update their username, need to update buckets too
+}
+
+onMounted(() => {
+  getAvatar()
+})
+
+async function getAvatar() {
+  try {
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
+    if (error) throw error
+    state.avatar = data.signedUrl
+  } catch (error) {
+    console.log('Error - ' + error)
+  }
 }
 </script>
 
@@ -128,11 +202,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             autocomplete="off"
             size="md"
             input-class="ps-[77px]"
-          >
-            <template #leading>
-              <span class="text-gray-500 dark:text-gray-400 text-sm">nuxt.com/</span>
-            </template>
-          </UInput>
+          />
         </UFormGroup>
 
         <UFormGroup
@@ -143,6 +213,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
           :ui="{ container: 'flex flex-wrap items-center gap-3', help: 'mt-0' }"
         >
           <UAvatar
+            v-model="state.avatar"
             :src="state.avatar"
             :alt="state.name"
             size="lg"
@@ -162,45 +233,6 @@ async function onSubmit(event: FormSubmitEvent<any>) {
             accept=".jpg, .jpeg, .png, .gif"
             @change="onFileChange"
           >
-        </UFormGroup>
-
-        <UFormGroup
-          name="bio"
-          label="Bio"
-          description="Brief description for your profile. URLs are hyperlinked."
-          class="grid grid-cols-2 gap-2"
-          :ui="{ container: '' }"
-        >
-          <UTextarea
-            v-model="state.bio"
-            :rows="5"
-            autoresize
-            size="md"
-          />
-        </UFormGroup>
-
-        <UFormGroup
-          name="password"
-          label="Password"
-          description="Confirm your current password before setting a new one."
-          class="grid grid-cols-2 gap-2"
-          :ui="{ container: '' }"
-        >
-          <UInput
-            id="password"
-            v-model="state.password_current"
-            type="password"
-            placeholder="Current password"
-            size="md"
-          />
-          <UInput
-            id="password_new"
-            v-model="state.password_new"
-            type="password"
-            placeholder="New password"
-            size="md"
-            class="mt-2"
-          />
         </UFormGroup>
       </UDashboardSection>
     </UForm>

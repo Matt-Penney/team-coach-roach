@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { sub } from 'date-fns'
-import type { Period, Range } from '~/types'
+import type { Period, Range, Member } from '~/types'
 
 const supabase = useSupabaseClient()
 const user = useSupabaseUser()
 
 // make a global function for this
 const logout = async () => {
-  await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut()
   navigateTo('/')
+  if (error) console.log(error)
 }
 
 definePageMeta({
@@ -18,7 +19,7 @@ definePageMeta({
 const { data: page } = await useAsyncData('dashboard', () => queryContent('/dashboard').findOne())
 if (!page.value) {
   console.log(page)
-  throw createError({ statusCode: 404, statusMessage: 'Page nots found', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
 }
 
 const { isNotificationsSlideoverOpen } = useDashboard()
@@ -35,6 +36,12 @@ const items = [[{
 
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
+const member = ref<Member>({
+  name: 'Matt Penney',
+  username: 'mattpenney00',
+  role: 'coach',
+  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' }
+}) // make it just get their own logged in account, clients shouldnt be able to select/see other users
 
 useSeoMeta({
   title: page.value.title,
@@ -117,6 +124,13 @@ defineOgImage({
           <DashboardHomePeriodSelect
             v-model="period"
             :range="range"
+          />
+        </template>
+
+        <template #right>
+          <!-- ~/components/dashboard/home/HomeMemberSelect.vue -->
+          <DashboardHomeMemberSelect
+            v-model="member"
           />
         </template>
       </UDashboardToolbar>

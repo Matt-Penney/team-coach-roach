@@ -17,6 +17,8 @@ watch(user, () => {
   }
 }, { immediate: true })
 
+const loading = ref(false)
+
 const fields = [{
   name: 'name',
   type: 'text',
@@ -54,19 +56,26 @@ const providers = [{
 async function onSubmit(user: any) {
   console.log('Submitted', user)
 
-  // check that the email isnt already in use TO DO
-  const { error } = await supabase.auth.signUp({
-    email: user.email,
-    password: user.password,
-    options: {
-      data: {
-        name: user.name,
-        email: user.email
-      },
-      emailRedirectTo: 'http://localhost:3000/confirm' // doesnt work so I used a watch
-    }
-  })
-  if (error) console.log('Error - ' + error)
+  // check that the email isnt already in use TO DO - it might be built in
+  try {
+    loading.value = true
+    const { error } = await supabase.auth.signUp({
+      email: user.email,
+      password: user.password,
+      options: {
+        data: {
+          name: user.name,
+          email: user.email
+        }
+      }
+    })
+    if (error) throw error
+  } catch (error) {
+    // console.log('Error - ' + error)
+    alert(error.error_description || error.message)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 

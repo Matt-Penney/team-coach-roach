@@ -27,11 +27,16 @@ export interface Account {
   email: string
   age: number
   mobilePhoneNumber: string
-  role: 'client' | 'coach'
-  avatar?: Avatar
 }
 
 // Dashboard shit
+
+export interface Member {
+  name: string
+  username: string
+  role: 'client' | 'coach' | 'admin' | 'none'
+  avatar: Avatar
+}
 
 export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 
@@ -51,13 +56,6 @@ export interface Mail {
   subject: string
   body: string
   date: string
-}
-
-export interface Member {
-  name: string
-  username: string
-  role: 'member' | 'owner'
-  avatar: Avatar
 }
 
 export interface Notification {

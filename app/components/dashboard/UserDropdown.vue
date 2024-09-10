@@ -2,6 +2,26 @@
 const { isHelpSlideoverOpen } = useDashboard()
 const { isDashboardSearchModalOpen } = useUIState()
 const { metaSymbol } = useShortcuts()
+const supabase = useSupabaseClient()
+
+const loading = ref(true)
+const account = ref(null)
+const avatarUrl = ref('')
+
+loading.value = true
+const user = useSupabaseUser()
+
+const { data } = await supabase
+  .from('account')
+  .select('*')
+  .eq('id', user.value?.id)
+  .single()
+if (data) {
+  account.value = data
+}
+loading.value = false
+
+console.log(account.value.avatarUrl)
 
 const items = computed(() => [
   [{
@@ -45,6 +65,20 @@ const items = computed(() => [
     to: '/'
   }]
 ])
+
+onMounted(() => {
+  getAvatar()
+})
+
+async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
+  try {
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
+    if (error) throw error
+    avatarUrl.value = data.signedUrl
+  } catch (error) {
+    console.log('Error - ' + error)
+  }
+}
 </script>
 
 <template>
@@ -60,12 +94,12 @@ const items = computed(() => [
         color="gray"
         variant="ghost"
         class="w-full"
-        label="Benjamin"
+        :label="account.name"
         :class="[open && 'bg-gray-50 dark:bg-gray-800']"
       >
         <template #leading>
           <UAvatar
-            src="https://avatars.githubusercontent.com/u/739984?v=4"
+            :src="avatarUrl"
             size="2xs"
           />
         </template>
@@ -85,7 +119,7 @@ const items = computed(() => [
           Signed in as
         </p>
         <p class="truncate font-medium text-gray-900 dark:text-white">
-          ben@nuxtlabs.com
+          {{ account.email }}
         </p>
       </div>
     </template>

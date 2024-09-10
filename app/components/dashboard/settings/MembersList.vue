@@ -54,7 +54,7 @@ function onRoleChange(member: Member, role: string) {
       <div class="flex items-center gap-3">
         <USelectMenu
           :model-value="member.role"
-          :options="['member', 'owner']"
+          :options="['member', 'coach']"
           color="white"
           :ui-menu="{ select: 'capitalize', option: { base: 'capitalize' } }"
           @update:model-value="onRoleChange(member, $event)"

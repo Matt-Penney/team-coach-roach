@@ -2,11 +2,34 @@
 import type { NavItem } from '@nuxt/content'
 
 const supabase = useSupabaseClient()
+const accountName = ref('')
+const loading = ref(true)
+
+loading.value = true
 const user = useSupabaseUser()
 
-const logout = async () => {
-  await supabase.auth.signOut()
-  navigateTo('/')
+const { data } = await supabase
+  .from('account')
+  .select('name')
+  .eq('id', user.value?.id)
+  .single()
+if (data) {
+  accountName.value = data.name
+}
+loading.value = true
+
+async function logout() {
+  try {
+    loading.value = true
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
+    navigateTo('/')
+  } catch (error) {
+    console.log('Error - ' + error)
+    alert(error.error_description || error.message)
+  } finally {
+    loading.value = false
+  }
 }
 
 const navigation = inject<Ref<NavItem[]>>('navigation', ref([]))
@@ -45,7 +68,7 @@ const links = [{
       #right
     >
       <!-- make this better and use the 'account' type interface -->
-      <p>Hello, {{ user.user_metadata.name }}</p>
+      <p>Hello, {{ accountName }}</p>
       <UButton
         v-if="user"
         label="Logout"

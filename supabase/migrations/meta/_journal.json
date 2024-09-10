@@ -8,6 +8,20 @@
       "when": 1725805862756,
       "tag": "0000_certain_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1725909474642,
+      "tag": "0001_organic_shriek",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1725986219124,
+      "tag": "0002_wet_rictor",
+      "breakpoints": true
     }
   ]
 }
