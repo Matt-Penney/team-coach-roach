@@ -8,17 +8,17 @@ const loading = ref(true)
 loading.value = true
 const user = useSupabaseUser()
 
-const { data } = await supabase
+const { data } = await supabase // TO DO move to a single api call, many times this is being copy/pasted
   .from('account')
   .select('name')
-  .eq('id', user.value?.id)
+  .eq('id', user?.value?.id)
   .single()
 if (data) {
   accountName.value = data.name
 }
 loading.value = true
 
-async function logout() {
+async function logout() { // TO DO put to common place, this has been a copy/paste in many places
   try {
     loading.value = true
     const { error } = await supabase.auth.signOut()
@@ -45,7 +45,7 @@ const links = [{
   to: '/blog'
 },
 {
-  label: 'Dashboard TEMP',
+  label: 'Dashboard TEMP', // TO DO make this a button next to 'logout'? OOR better option is just make this button dynamic for when an account has been given a 'memberType' (this will be done via invite eventually)
   to: '/dashboard'
 }]
 </script>

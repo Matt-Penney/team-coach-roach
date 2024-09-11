@@ -65,12 +65,12 @@ export default defineNuxtConfig({
   compatibilityDate: '2024-07-11',
 
   devServer: {
-    // host: '0.0.0.0',
-    host: 'localhost',
+    host: '0.0.0.0',
+    // host: 'localhost',
     port: 3000
   },
 
-  supabase: {
+  supabase: { // TO DO use SSL https://supabase.com/docs/guides/database/connecting-to-postgres#connecting-with-drizzle
     redirectOptions: {
       login: '/login',
       callback: '/confirm', // confirm redirect into dashboard, use cookies for this eventually too
@@ -78,8 +78,7 @@ export default defineNuxtConfig({
       cookieRedirect: true
     }
   },
-
-  runtimeConfig: {
+  runtimeConfig: { // TO DO check on this, supabase might already handle it and I just need to support it
     cookieName: '__session',
     cookieSecret: 'secret',
     cookieExpires: ONE_DAY.toString(),

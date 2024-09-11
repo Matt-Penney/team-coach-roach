@@ -4,7 +4,7 @@ import type { Member, MemberType } from '~/types'
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 
 const model = defineModel({
-  type: Object as PropType<Member>,
+  type: Object as PropType<Member[]>, // TO DO fix warning of 'invalid prop', fixed?
   required: true
 })
 
@@ -17,6 +17,7 @@ function onMemberChange(member: Member, memberType: MemberType) {
 
 <template>
   <USelectMenu
+    v-if="members.length > 1"
     v-slot="{ open }"
     v-model="model"
     :options="members"
@@ -49,4 +50,22 @@ function onMemberChange(member: Member, memberType: MemberType) {
       </div>
     </UButton>
   </USelectMenu>
+  <div
+    v-else
+    class="flex items-center gap-3 min-w-0"
+  >
+    <UAvatar
+      v-bind="model.avatar"
+      size="md"
+    />
+
+    <div class="text-sm min-w-0">
+      <p class="text-gray-900 dark:text-white font-medium truncate">
+        {{ model.name }}
+      </p>
+      <p class="text-gray-500 dark:text-gray-400 truncate">
+        {{ model.username }}
+      </p>
+    </div>
+  </div>
 </template>

@@ -25,7 +25,8 @@ export type UserStatus = 'subscribed' | 'unsubscribed' | 'bounced'
 export type MemberType = 'client' | 'coach' | 'admin'
 
 export interface Account {
-  accountId: number
+  // accountId: number
+  account_id: number
   name: string
   email: string
   age?: number

@@ -3,10 +3,6 @@ const route = useRoute()
 const appConfig = useAppConfig()
 const { isHelpSlideoverOpen } = useDashboard()
 
-definePageMeta({
-  layout: 'dashboard'
-})
-
 const links = [{
   id: 'home',
   label: 'Home',

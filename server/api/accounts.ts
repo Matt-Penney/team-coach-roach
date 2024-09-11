@@ -184,14 +184,28 @@ import type { Account, UserStatus } from '~/types'
 // }]
 
 export default eventHandler(async (event): Promise<Account[]> => {
-  const { q, statuses, locations, sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' }
+  const { q, statuses, /* locations, */sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' }
 
   const client = await serverSupabaseClient(event)
-  const { data } = await client.from('account').select('*')
+  const { data } = await client.from('account').select('*') // TO DO for each 'data' map to Account type
 
-  console.log(data)
-  console.log(q)
+  // const accounts: Account[] = []
 
+  // data?.forEach((account: Account) => {
+  //   const dto: Account = {
+  //     accountId: account.accountId,
+  //     name: account.name,
+  //     email: account.email,
+  //     age: account.age,
+  //     mobilePhoneNumber: account.mobilePhoneNumber,
+  //     username: account.username,
+  //     userStatus: account.userStatus,
+  //     avatar: account.avatar
+  //   }
+
+  //   accounts.concat(dto)
+  // })
+  // console.log(accounts)
   return data!.filter((account: Account) => {
     if (!q) return true
 

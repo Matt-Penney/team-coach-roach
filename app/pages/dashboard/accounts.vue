@@ -57,7 +57,7 @@ const defaultStatuses = accounts.value.reduce((acc, account) => {
 }, [] as string[])
 
 function onSelect(row: Account) {
-  const index = selected.value.findIndex(item => item.accountId === row.accountId)
+  const index = selected.value.findIndex(item => item.account_id === row.account_id)
   if (index === -1) {
     selected.value.push(row)
   } else {

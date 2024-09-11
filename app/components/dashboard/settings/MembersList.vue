@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import type { Member, MemberType } from '~/types'
 
+const supabase = useSupabaseClient()
+const loading = ref(true)
+
+loading.value = true
+// ?
+loading.value = false
+
 defineProps({
   members: {
     type: Array as PropType<Member[]>,
@@ -23,6 +30,19 @@ function onMemberTypeChange(member: Member, memberType: MemberType) {
   // Do something with data
   console.log(member.username, memberType)
 }
+
+async function getAvatar(avatarUrl) {
+  if (!avatarUrl) return
+  let src = ''
+  try {
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(avatarUrl, 60) // TO DO doesnt work
+    if (error) throw error
+    else src = data.signedUrl
+  } catch (error) {
+    console.log('Error - ' + error)
+  }
+  return src
+}
 </script>
 
 <template>
@@ -37,7 +57,8 @@ function onMemberTypeChange(member: Member, memberType: MemberType) {
     >
       <div class="flex items-center gap-3 min-w-0">
         <UAvatar
-          v-bind="member.avatar"
+          :src="getAvatar(member.avatarUrl)"
+          :alt="member.name"
           size="md"
         />
 

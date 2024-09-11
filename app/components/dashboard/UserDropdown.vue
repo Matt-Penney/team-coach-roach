@@ -13,19 +13,17 @@ const user = useSupabaseUser()
 
 const { data } = await supabase
   .from('account')
-  .select('*')
-  .eq('id', user.value?.id)
+  .select('account_id, name, email, avatarUrl')
+  .eq('id', user.value.id)
   .single()
 if (data) {
   account.value = data
 }
 loading.value = false
 
-console.log(account.value.avatarUrl)
-
 const items = computed(() => [
   [{
-    slot: 'account',
+    slot: 'Account',
     label: '',
     disabled: true
   }], [{
@@ -66,11 +64,13 @@ const items = computed(() => [
   }]
 ])
 
-onMounted(() => {
+onMounted(() => { // TO DO this sucks
   getAvatar()
 })
 
 async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
+  if (!account.value.avatarUrl) return
+
   try {
     const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
@@ -100,6 +100,7 @@ async function getAvatar() { // TO DO this kinda sucks, I dont want to have to g
         <template #leading>
           <UAvatar
             :src="avatarUrl"
+            :alt="account.name"
             size="2xs"
           />
         </template>

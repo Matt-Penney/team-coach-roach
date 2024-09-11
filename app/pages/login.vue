@@ -74,7 +74,7 @@ async function onSubmit(user: any) {
     <UAuthForm
       :fields="fields"
       :validate="validate"
-      validate-on="onSubmit"
+      :validate-on="['onSubmit']"
       :providers="providers"
       title="Welcome back"
       align="top"

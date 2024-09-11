@@ -2,13 +2,34 @@ import { serverSupabaseClient } from '#supabase/server'
 import type { Member } from '~/types'
 
 export default eventHandler(async (event): Promise<Member[]> => {
+  // TO DO this might need a middleware check that only the permitted people can come use this, look at nuxt3Auth example uses async functions for only admin roles
   const client = await serverSupabaseClient(event)
 
-  const { data } = await client.from('account').select('*')
+  const { data } = await client.from('account').select('account_id, name, email, age, mobilePhoneNumber, username, avatarUrl, memberType, userStatus')
     .in('memberType', ['client', 'coach'])
     .order('name', { ascending: false })
 
   return data as Member[]
+
+  // const members: Member[] = [] TO DO get this to work maybe? ideally
+
+  // data?.forEach((member: Member) => {
+  //   const dto: Member = {
+  //     accountId: member.accountId,
+  //     name: member.name,
+  //     email: member.email,
+  //     age: member.age,
+  //     mobilePhoneNumber: member.mobilePhoneNumber,
+  //     username: member.username,
+  //     userStatus: member.userStatus,
+  //     avatar: member.avatar,
+  //     memberType: member.memberType
+  //   }
+
+  //   members.concat(dto)
+  // })
+
+  // return members
 })
 
 // const members = [{

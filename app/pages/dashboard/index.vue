@@ -2,8 +2,26 @@
 import { sub } from 'date-fns'
 import type { Period, Range, Member } from '~/types'
 
+definePageMeta({
+  layout: 'dashboard'
+})
+
 const supabase = useSupabaseClient()
+const loading = ref(true)
+const account = ref(null)
+
+loading.value = true
 const user = useSupabaseUser()
+
+const { data } = await supabase
+  .from('account')
+  .select('account_id, name, email, username, avatarUrl')
+  .eq('id', user?.value?.id)
+  .single()
+if (data) {
+  account.value = data
+}
+loading.value = false
 
 // make a global function for this
 const logout = async () => {
@@ -11,10 +29,6 @@ const logout = async () => {
   navigateTo('/')
   if (error) console.log(error)
 }
-
-definePageMeta({
-  layout: 'dashboard'
-})
 
 const { data: page } = await useAsyncData('dashboard', () => queryContent('/dashboard').findOne())
 if (!page.value) {
@@ -37,16 +51,7 @@ const items = [[{
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
 
-const member = ref<Member>({
-  accountId: 999,
-  name: 'Matt Penney',
-  email: 'blah@blah.com',
-  username: 'mattpenney00',
-  mobilePhoneNumber: '07111111222',
-  memberType: 'coach',
-  avatar: { src: 'https://ipx.nuxt.com/f_auto,s_192x192/gh_avatar/antfu' },
-  userStatus: 'subscribed'
-}) // make it just get their own logged in account, clients shouldnt be able to select/see other users
+const member = ref<Member>(account.value) // make it just get their own logged in account, clients shouldnt be able to select/see other users
 
 useSeoMeta({
   title: page.value.title,

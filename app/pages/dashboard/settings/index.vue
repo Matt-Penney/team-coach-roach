@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
+definePageMeta({
+  layout: 'dashboard' // might be able to pass it through props or something rather than defining this on EACH page
+})
+
 const supabase = useSupabaseClient()
 const loading = ref(true)
 const account = ref(null)
 const files = ref()
-
-definePageMeta({
-  layout: 'dashboard' // might be able to pass it through props or something rather than defining this on EACH page
-})
 
 loading.value = true
 const user = useSupabaseUser()
 
 const { data } = await supabase
   .from('account')
-  .select('*')
-  .eq('id', user.value?.id)
+  .select('account_id, name, email, username, avatarUrl')
+  .eq('id', user.value.id)
   .single()
 if (data) {
   account.value = data
@@ -50,7 +50,7 @@ async function onFileChange(e: Event) {
     throw new Error('You must select an image to upload.')
   }
 
-  if (account.value.username !== state.username) return // TO DO probs save profile then upload avatar idk
+  // if ((account.value.username !== state.username) || !state.username) return // TO DO probs save profile then upload avatar idk, needs to have a username entered first
 
   const file = files.value[0]
   const fileExt = file.name.split('.').pop()
@@ -114,6 +114,8 @@ onMounted(() => {
 })
 
 async function getAvatar() {
+  if (!account.value.avatarUrl) return
+
   try {
     const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
@@ -201,7 +203,6 @@ async function getAvatar() {
             type="username"
             autocomplete="off"
             size="md"
-            input-class="ps-[77px]"
           />
         </UFormGroup>
 
