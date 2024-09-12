@@ -8,5 +8,5 @@ export default eventHandler(async (event) => {
   if (error) {
     return false
   }
-  return { account: data } // TO DO doesnt work
+  return { account: data } // TO DO doesnt work, use router thing to get the 'id' from 'event'
 })

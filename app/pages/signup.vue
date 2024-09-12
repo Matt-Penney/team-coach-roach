@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
-const user = useSupabaseUser()
 
 definePageMeta({
   layout: 'auth'
@@ -9,13 +8,6 @@ definePageMeta({
 useSeoMeta({
   title: 'Sign up'
 })
-
-watch(user, () => {
-  if (user.value) {
-    // Redirect to protected page
-    return navigateTo('/confirm')
-  }
-}, { immediate: true })
 
 const loading = ref(false)
 
@@ -69,6 +61,7 @@ async function onSubmit(user: any) {
       }
     })
     if (error) throw error
+    else navigateTo('/confirm')
   } catch (error) {
     // console.log('Error - ' + error)
     alert(error.error_description || error.message)

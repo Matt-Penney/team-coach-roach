@@ -3,20 +3,22 @@ import { sub } from 'date-fns'
 import type { Period, Range, Member } from '~/types'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: 'auth'
 })
 
 const supabase = useSupabaseClient()
 const loading = ref(true)
 const account = ref(null)
+const user = ref(null)
 
 loading.value = true
-const user = useSupabaseUser()
+user.value = useAuth().me().user
 
 const { data } = await supabase
   .from('account')
   .select('account_id, name, email, username, avatarUrl')
-  .eq('id', user?.value?.id)
+  .eq('id', user.value.id)
   .single()
 if (data) {
   account.value = data

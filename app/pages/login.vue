@@ -1,9 +1,6 @@
 <script setup lang="ts">
 import type { FormError } from '#ui/types'
 
-const supabase = useSupabaseClient()
-const user = useSupabaseUser()
-
 definePageMeta({
   layout: 'auth'
 })
@@ -11,13 +8,6 @@ definePageMeta({
 useSeoMeta({
   title: 'Login'
 })
-
-watch(user, () => {
-  if (user.value) {
-    // Redirect to protected page
-    return navigateTo('/confirm')
-  }
-}, { immediate: true })
 
 const loading = ref(false)
 
@@ -53,11 +43,9 @@ async function onSubmit(user: any) {
   // console.log('Submitted', user)
   try {
     loading.value = true
-    const { error } = await supabase.auth.signInWithPassword({
-      email: user.email,
-      password: user.password
-    })
+    const { error } = useAuth().login(user.email, user.password)
     if (error) throw error
+    else navigateTo('/confirm')
   } catch (error) {
     // console.log('Error - ' + error)
     alert(error.error_description || error.message)

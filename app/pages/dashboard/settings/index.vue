@@ -2,16 +2,18 @@
 import type { FormError, FormSubmitEvent } from '#ui/types'
 
 definePageMeta({
-  layout: 'dashboard' // might be able to pass it through props or something rather than defining this on EACH page
+  layout: 'dashboard', // might be able to pass it through props or something rather than defining this on EACH page
+  middleware: 'auth'
 })
 
 const supabase = useSupabaseClient()
 const loading = ref(true)
 const account = ref(null)
 const files = ref()
+const user = ref(null)
 
 loading.value = true
-const user = useSupabaseUser()
+user.value = useAuth().me().user
 
 const { data } = await supabase
   .from('account')

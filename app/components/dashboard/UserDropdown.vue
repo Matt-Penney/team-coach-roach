@@ -4,12 +4,17 @@ const { isDashboardSearchModalOpen } = useUIState()
 const { metaSymbol } = useShortcuts()
 const supabase = useSupabaseClient()
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const loading = ref(true)
 const account = ref(null)
 const avatarUrl = ref('')
+const user = ref(null)
 
 loading.value = true
-const user = useSupabaseUser()
+user.value = useAuth().me().user // TO DO make use of useAsyncData, defo good to use for many things
 
 const { data } = await supabase
   .from('account')

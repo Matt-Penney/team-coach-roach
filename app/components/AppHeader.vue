@@ -4,9 +4,11 @@ import type { NavItem } from '@nuxt/content'
 const supabase = useSupabaseClient()
 const accountName = ref('')
 const loading = ref(true)
+const user = ref(null)
 
 loading.value = true
-const user = useSupabaseUser()
+user.value = useAuth().me().user
+console.log(user.value)
 
 const { data } = await supabase // TO DO move to a single api call, many times this is being copy/pasted
   .from('account')
@@ -16,16 +18,15 @@ const { data } = await supabase // TO DO move to a single api call, many times t
 if (data) {
   accountName.value = data.name
 }
-loading.value = true
+loading.value = false
 
-async function logout() { // TO DO put to common place, this has been a copy/paste in many places
+async function logout() {
   try {
     loading.value = true
-    const { error } = await supabase.auth.signOut()
+    const { error } = useAuth().logout()
     if (error) throw error
     navigateTo('/')
   } catch (error) {
-    console.log('Error - ' + error)
     alert(error.error_description || error.message)
   } finally {
     loading.value = false
@@ -64,13 +65,13 @@ const links = [{
     </template>
 
     <template
-      v-if="user"
+      v-if="accountName"
       #right
     >
       <!-- make this better and use the 'account' type interface -->
       <p>Hello, {{ accountName }}</p>
       <UButton
-        v-if="user"
+        v-if="accountName"
         label="Logout"
         color="gray"
         @click="logout"

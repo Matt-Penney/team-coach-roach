@@ -1,24 +1,7 @@
 <script setup lang="ts">
 const colorMode = useColorMode()
-const supabase = useSupabaseClient()
 
 const color = computed(() => colorMode.value === 'dark' ? '#111827' : 'white')
-
-const authUser = ref()
-const router = useRouter()
-onMounted(() => {
-  supabase.auth.onAuthStateChange((_, _session) => {
-    console.log('AUTH CHANGED')
-    return // TO DO investigate and try get some sort of session/user/cookie handling going on mate
-    if (_session) {
-      authUser.value = _session.user
-      router.push('/dashboard')
-    } else {
-      authUser.value = undefined
-      router.push('/login')
-    }
-  })
-})
 
 useHead({
   meta: [

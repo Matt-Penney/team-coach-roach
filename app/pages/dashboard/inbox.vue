@@ -2,7 +2,8 @@
 import type { Mail } from '~/types'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: 'auth'
 })
 
 const tabItems = [{

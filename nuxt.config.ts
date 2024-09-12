@@ -75,13 +75,30 @@ export default defineNuxtConfig({
       login: '/login',
       callback: '/confirm', // confirm redirect into dashboard, use cookies for this eventually too
       exclude: ['/', '/signup'],
-      cookieRedirect: true
+      cookieRedirect: false // TO DO see if i can fix this for be 'true'
+    },
+    cookieOptions: {
+      maxAge: 60 * 60 * 8,
+      sameSite: 'lax',
+      secure: true
+    },
+    clientOptions: {
+      auth: {
+        flowType: 'pkce',
+        // autoRefreshToken: isBrowser(),
+        // detectSessionInUrl: isBrowser(),
+        persistSession: true
+      }
     }
+
   },
+
   runtimeConfig: { // TO DO check on this, supabase might already handle it and I just need to support it
-    cookieName: '__session',
-    cookieSecret: 'secret',
-    cookieExpires: ONE_DAY.toString(),
-    cookieRememberMeExpires: ONE_WEEK.toString()
+    // cookieName: '__session',
+    // cookieSecret: 'secret',
+    // cookieExpires: ONE_DAY.toString(),
+    public: {
+      baseUrl: process.env.BASE_URL || 'http://localhost:3000'
+    }
   }
 })
