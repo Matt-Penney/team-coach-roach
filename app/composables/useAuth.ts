@@ -40,7 +40,7 @@ export const useAuth = () => {
         const data: any = await $fetch('/api/me')
         setUser(data)
       } catch (error) {
-        console.log('useAuth:Ln40 - ', error)
+        // console.log('useAuth:Ln40 - ', error)
         setCookie(null)
       }
     }

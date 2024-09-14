@@ -11,7 +11,7 @@ const _redirectPath = useCookie(`${cookieName}-redirect-path`).value
 
 watch(user, () => {
   if (user.value) {
-    console.log('confirm.vue:14')
+    // console.log('confirm.vue:14')
     // Clear cookie
     // useCookie(`${cookieName}-redirect-path`).value = null
     // Redirect to path

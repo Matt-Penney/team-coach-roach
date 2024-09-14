@@ -8,7 +8,7 @@ const model = defineModel({
   type: Object as PropType<Member>, // TO DO fix warning of 'invalid prop', fixed?
   required: true
 })
-console.log('Model - ', model)
+// console.log('Model - ', model)
 
 function onMemberChange(member: Member, memberType: MemberType) {
   // Do something with data
