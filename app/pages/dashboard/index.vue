@@ -19,19 +19,18 @@ if (!page.value) {
 loading.value = true
 const account = useAccount()
 
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
-// const member = ref<Member>(account.value)
-const member = ref<Member>([])
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar(account.value.avatarUrl))
+const member = ref<Member>(account.value)
 loading.value = false
 
-async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
-  if (!account.value.avatarUrl) return
+async function getAvatar(avatarUrl: string){ // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
   if (avatarSignedUrl) return avatarSignedUrl
 
   try {
-    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(avatarUrl, 60)
     if (error) throw error
-    else return data.signedUrl
+    console.log(data.signedUrl)
+    return data.signedUrl
   } catch (error) {
     console.log('Error - ' + error)
   }

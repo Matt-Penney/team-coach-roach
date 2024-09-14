@@ -11,7 +11,8 @@ loading.value = true
 const account = useAccount()
 // console.log('UserDropDown:13 - ', account.value)
 
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
+// const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
+const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
 loading.value = false
 
 const items = computed(() => [

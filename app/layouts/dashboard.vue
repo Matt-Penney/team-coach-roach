@@ -4,10 +4,8 @@ const appConfig = useAppConfig()
 const { isHelpSlideoverOpen } = useDashboard()
 
 const accountState = useState('account')
-if (!accountState.value) accountState.value = await $fetch('/api/account/me', { headers: useRequestHeaders(['cookie']) })
-
-
-console.log('layouts/dashboard - ', accountState)
+if (!accountState.value) accountState.value = await $fetch('/api/account/me', { headers: useRequestHeaders(['cookie'])})
+// console.log('layouts/dashboard - ', accountState)
 
 const links = [{
   id: 'home',

@@ -5,7 +5,7 @@ import type { Member, MemberType } from '~/types'
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
 
 const model = defineModel({
-  type: Object as PropType<Member>, // TO DO fix warning of 'invalid prop', fixed?
+  type: Object as PropType<Member>,
   required: true
 })
 // console.log('Model - ', model)
@@ -13,7 +13,19 @@ const model = defineModel({
 function onMemberChange(member: Member, memberType: MemberType) {
   // Do something with data
   // TO DO add a URL param using the username and use that to drive the current dashboard showing a clients info
-  console.log(member.username, memberType)
+  console.log(member, memberType)
+
+  // getAvatar(member.avatarUrl)
+}
+
+async function getAvatar(avatarUrl) { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
+  try {
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(avatarUrl, 60)
+    if (error) throw error
+    else return data.signedUrl
+  } catch (error) {
+    console.log('Error - ' + error)
+  }
 }
 </script>
 

@@ -16,7 +16,9 @@ const files = ref()
 loading.value = true
 const account = useAccount()
 // const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar('avatarSignedUrl'), {
+  watch: [state.avatarUrl]
+})
 
 loading.value = false
 
@@ -26,8 +28,8 @@ const isDeleteAccountModalOpen = ref(false)
 const state = reactive({
   name: account.value.name,
   email: account.value.email,
-  username: account.value.username
-  // avatar: account.value.avatarUrl
+  username: account.value.username,
+  avatarUrl: account.value.avatarUrl
 })
 
 const toast = useToast()
@@ -60,14 +62,14 @@ async function onFileChange(e: Event) {
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: true
-      }) // TO DO replace existing file/dupes
-
+      })
     if (error) throw error
     else {
       await supabase.from('account')
         .update({ avatarUrl: filePath })
         .eq('id', user.value.id)
     }
+    state.avatarUrl = filePath
     toast.add({ title: 'Avatar updated successfully', icon: 'i-heroicons-check-circle' })
   } catch (error) {
     console.log('Error - ' + error)
