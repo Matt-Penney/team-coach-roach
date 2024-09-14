@@ -37,7 +37,7 @@ const sales = [{
   price: 199
 }]
 
-const formatNumber = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format
+const formatNumber = new Intl.NumberFormat('en', { style: 'currency', currency: 'GBP', maximumFractionDigits: 0 }).format
 </script>
 
 <template>
