@@ -2,40 +2,55 @@
 import { sub } from 'date-fns'
 import type { Period, Range, Member } from '~/types'
 
+const supabase = useSupabaseClient()
+const user = useAuthUser()
+const loading = ref(true)
+
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth'
 })
 
-const supabase = useSupabaseClient()
-const loading = ref(true)
-const account = ref(null)
-const user = ref(null)
-
-loading.value = true
-user.value = useAuth().me().user
-
-const { data } = await supabase
-  .from('account')
-  .select('account_id, name, email, username, avatarUrl')
-  .eq('id', user.value.id)
-  .single()
-if (data) {
-  account.value = data
-}
-loading.value = false
-
-// make a global function for this
-const logout = async () => {
-  const { error } = await supabase.auth.signOut()
-  navigateTo('/')
-  if (error) console.log(error)
-}
-
 const { data: page } = await useAsyncData('dashboard', () => queryContent('/dashboard').findOne())
 if (!page.value) {
   console.log(page)
   throw createError({ statusCode: 404, statusMessage: 'Page not found', fatal: true })
+}
+
+loading.value = true
+const account = useAccount()
+
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
+// const member = ref<Member>(account.value)
+const member = ref<Member>([])
+loading.value = false
+
+async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
+  if (!account.value.avatarUrl) return
+  if (avatarSignedUrl) return avatarSignedUrl
+
+  try {
+    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
+    if (error) throw error
+    else return data.signedUrl
+  } catch (error) {
+    console.log('Error - ' + error)
+  }
+}
+
+// make a global function for this, partially done
+const logout = async () => {
+  try {
+    loading.value = true
+    const { error } = useAuth().logout()
+    if (error) throw error
+    navigateTo('/')
+  } catch (error) {
+    alert(error.error_description || error.message)
+  } finally {
+    loading.value = false
+    clearNuxtData('account')
+  }
 }
 
 const { isNotificationsSlideoverOpen } = useDashboard()
@@ -52,8 +67,6 @@ const items = [[{
 
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
-
-const member = ref<Member>(account.value) // make it just get their own logged in account, clients shouldnt be able to select/see other users
 
 useSeoMeta({
   title: page.value.title,

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { Mail } from '~/types'
 
+const user = useAuthUser()
+
 definePageMeta({
   layout: 'dashboard',
   middleware: 'auth'

@@ -74,7 +74,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm', // confirm redirect into dashboard, use cookies for this eventually too
-      exclude: ['/', '/signup'],
+      exclude: ['/', '/signup', '/docs', '/blog', '/pricing'],
       cookieRedirect: false // TO DO see if i can fix this for be 'true'
     },
     cookieOptions: {

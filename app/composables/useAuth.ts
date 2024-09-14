@@ -1,3 +1,5 @@
+import type { Account } from '~/types'
+
 export const useAuth = () => {
   const authUser = useSupabaseUser()
 
@@ -10,32 +12,35 @@ export const useAuth = () => {
   }
 
   const login = async (email: string, password: string) => {
-    const data = await $fetch('/auth/login', {
-      method: 'POST',
-      body: {
-        email,
-        password
-      }
+    const client = useSupabaseClient()
+    const { data, error } = await client.auth.signInWithPassword({
+      email: email,
+      password: password
     })
 
-    setUser(data.user)
+    if (error) throw error
+
+    setUser(data)
     return authUser
   }
 
   const logout = async () => {
-    const data = await $fetch('/auth/logout', {
-      method: 'POST'
-    })
+    const client = useSupabaseClient()
+    const { error } = await client.auth.signOut()
 
-    setUser(data.user)
+    if (error) throw error
+
+    setUser(null)
+    navigateTo('/')
   }
 
   const me = async () => {
     if (!authUser.value) {
       try {
-        const data = await $fetch('/api/me')
-        setUser(data.user)
+        const data: any = await $fetch('/api/me')
+        setUser(data)
       } catch (error) {
+        console.log('useAuth:Ln40 - ', error)
         setCookie(null)
       }
     }

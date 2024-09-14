@@ -1,9 +1,8 @@
 <script setup lang="ts">
 const loading = ref(true)
-const user = ref(null)
 
 loading.value = true
-user.value = useAuth().me().user
+const user = useAuthUser()
 loading.value = false
 
 // Get redirect path from cookies
@@ -12,6 +11,7 @@ const _redirectPath = useCookie(`${cookieName}-redirect-path`).value
 
 watch(user, () => {
   if (user.value) {
+    console.log('confirm.vue:14')
     // Clear cookie
     // useCookie(`${cookieName}-redirect-path`).value = null
     // Redirect to path

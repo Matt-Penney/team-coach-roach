@@ -1,28 +1,23 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
+import type { Account } from '~/types/index.js'
+
+const client = useSupabaseClient()
+const user = useAuthUser()
 
 definePageMeta({
   layout: 'dashboard', // might be able to pass it through props or something rather than defining this on EACH page
   middleware: 'auth'
 })
 
-const supabase = useSupabaseClient()
 const loading = ref(true)
-const account = ref(null)
 const files = ref()
-const user = ref(null)
 
 loading.value = true
-user.value = useAuth().me().user
+const account = useAccount()
+// const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
 
-const { data } = await supabase
-  .from('account')
-  .select('account_id, name, email, username, avatarUrl')
-  .eq('id', user.value.id)
-  .single()
-if (data) {
-  account.value = data
-}
 loading.value = false
 
 const fileRef = ref<HTMLInputElement>()
@@ -31,8 +26,8 @@ const isDeleteAccountModalOpen = ref(false)
 const state = reactive({
   name: account.value.name,
   email: account.value.email,
-  username: account.value.username,
-  avatar: account.value.avatarUrl
+  username: account.value.username
+  // avatar: account.value.avatarUrl
 })
 
 const toast = useToast()
@@ -61,7 +56,7 @@ async function onFileChange(e: Event) {
 
   try {
     loading.value = true
-    const { error } = await supabase.storage.from('avatars')
+    const { error } = await client.storage.from('avatars')
       .upload(filePath, file, {
         cacheControl: '3600',
         upsert: true
@@ -69,7 +64,6 @@ async function onFileChange(e: Event) {
 
     if (error) throw error
     else {
-      state.avatar = URL.createObjectURL(file)
       await supabase.from('account')
         .update({ avatarUrl: filePath })
         .eq('id', user.value.id)
@@ -111,17 +105,14 @@ async function onSubmit(event: FormSubmitEvent<any>) {
   // TO DO when they update their username, need to update buckets too
 }
 
-onMounted(() => {
-  getAvatar()
-})
-
 async function getAvatar() {
   if (!account.value.avatarUrl) return
+  if (avatarSignedUrl) return avatarSignedUrl
 
   try {
     const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
-    state.avatar = data.signedUrl
+    else return data.signedUrl
   } catch (error) {
     console.log('Error - ' + error)
   }
@@ -216,8 +207,7 @@ async function getAvatar() {
           :ui="{ container: 'flex flex-wrap items-center gap-3', help: 'mt-0' }"
         >
           <UAvatar
-            v-model="state.avatar"
-            :src="state.avatar"
+            :src="avatarSignedUrl"
             :alt="state.name"
             size="lg"
           />

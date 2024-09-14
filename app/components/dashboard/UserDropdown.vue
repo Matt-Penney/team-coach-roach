@@ -1,29 +1,17 @@
 <script setup lang="ts">
+const supabase = useSupabaseClient()
+
 const { isHelpSlideoverOpen } = useDashboard()
 const { isDashboardSearchModalOpen } = useUIState()
 const { metaSymbol } = useShortcuts()
-const supabase = useSupabaseClient()
-
-definePageMeta({
-  middleware: 'auth'
-})
 
 const loading = ref(true)
-const account = ref(null)
-const avatarUrl = ref('')
-const user = ref(null)
 
 loading.value = true
-user.value = useAuth().me().user // TO DO make use of useAsyncData, defo good to use for many things
+const account = useAccount()
+// console.log('UserDropDown:13 - ', account.value)
 
-const { data } = await supabase
-  .from('account')
-  .select('account_id, name, email, avatarUrl')
-  .eq('id', user.value.id)
-  .single()
-if (data) {
-  account.value = data
-}
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
 loading.value = false
 
 const items = computed(() => [
@@ -69,17 +57,13 @@ const items = computed(() => [
   }]
 ])
 
-onMounted(() => { // TO DO this sucks
-  getAvatar()
-})
-
 async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
   if (!account.value.avatarUrl) return
 
   try {
     const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
-    avatarUrl.value = data.signedUrl
+    else return data.signedUrl
   } catch (error) {
     console.log('Error - ' + error)
   }
@@ -104,7 +88,7 @@ async function getAvatar() { // TO DO this kinda sucks, I dont want to have to g
       >
         <template #leading>
           <UAvatar
-            :src="avatarUrl"
+            :src="avatarSignedUrl"
             :alt="account.name"
             size="2xs"
           />

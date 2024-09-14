@@ -75,7 +75,7 @@ async function getAvatar(avatarUrl) {
       <div class="flex items-center gap-3">
         <USelectMenu
           :model-value="member.memberType"
-          :options="['member', 'coach']"
+          :options="['client', 'coach']"
           color="white"
           :ui-menu="{ select: 'capitalize', option: { base: 'capitalize' } }"
           @update:model-value="onMemberTypeChange(member, $event)"

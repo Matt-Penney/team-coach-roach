@@ -26,7 +26,7 @@ export type MemberType = 'client' | 'coach' | 'admin'
 
 export interface Account {
   // accountId: number
-  account_id: number
+  account_id?: number
   name: string
   email: string
   age?: number
@@ -35,11 +35,12 @@ export interface Account {
   memberType?: MemberType
   userStatus: UserStatus
   avatar?: Avatar
+  avatarUrl?: string
   location?: string
 }
 
 export interface Member extends Account {
-  role?: MemberType
+  role?: MemberType // to remove eventually
 }
 
 // export type UserWithoutPassword = Omit<User, 'password'>

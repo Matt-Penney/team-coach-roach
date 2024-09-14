@@ -40,14 +40,11 @@ const providers = [{
 }]
 
 async function onSubmit(user: any) {
-  // console.log('Submitted', user)
   try {
     loading.value = true
-    const { error } = useAuth().login(user.email, user.password)
-    if (error) throw error
-    else navigateTo('/confirm')
+    await useAuth().login(user.email, user.password)
+    navigateTo('/confirm')
   } catch (error) {
-    // console.log('Error - ' + error)
     alert(error.error_description || error.message)
   } finally {
     loading.value = false
@@ -62,7 +59,7 @@ async function onSubmit(user: any) {
     <UAuthForm
       :fields="fields"
       :validate="validate"
-      :validate-on="['onSubmit']"
+      :validate-on="['submit']"
       :providers="providers"
       title="Welcome back"
       align="top"
