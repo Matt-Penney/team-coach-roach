@@ -23,7 +23,7 @@ const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => ge
 const member = ref<Member>(account.value)
 loading.value = false
 
-async function getAvatar(avatarUrl: string){ // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
+async function getAvatar(avatarUrl: string) { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
   if (avatarSignedUrl) return avatarSignedUrl
 
   try {
@@ -60,7 +60,11 @@ const items = [[{
 }, {
   label: 'New account',
   icon: 'i-heroicons-user-plus',
-  to: '/dashboard/accounts' // TO DO wanna change this to accounts but need to fix routing
+  to: '/dashboard/accounts'
+}, {
+  label: 'New Checkin',
+  icon: 'i-heroicons-clipboard-document-check',
+  to: '/dashboard/checkin'
 }]]
 
 const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })

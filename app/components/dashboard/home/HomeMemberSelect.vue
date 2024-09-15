@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Member, MemberType } from '~/types'
 
+const client = useSupabaseClient()
 // const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
 
@@ -20,7 +21,7 @@ function onMemberChange(member: Member, memberType: MemberType) {
 
 async function getAvatar(avatarUrl) { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
   try {
-    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(avatarUrl, 60)
+    const { data, error } = await client.storage.from('avatars').createSignedUrl(avatarUrl, 60)
     if (error) throw error
     else return data.signedUrl
   } catch (error) {

@@ -2,7 +2,8 @@
 import type { Account } from '~/types'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: ['coach-only']
 })
 
 const defaultColumns = [{
@@ -40,7 +41,7 @@ const columns = computed(() => defaultColumns.filter(column => selectedColumns.v
 
 const query = computed(() => ({ q: q.value, statuses: selectedStatuses.value, locations: selectedLocations.value, sort: sort.value.column, order: sort.value.direction }))
 
-const { data: accounts, pending } = await useFetch<Account[]>('/api/accounts', { query, default: () => [] })
+const { data: accounts, pending } = await useFetch('/api/accounts', { query, default: () => [] })
 
 // const defaultLocations = accounts.value.reduce((acc, account) => {
 //   if (!acc.includes(account.location)) {

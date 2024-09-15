@@ -36,6 +36,15 @@ const links = [{
     shortcuts: ['G', 'A']
   }
 }, {
+  id: 'checkin',
+  label: 'Checkin',
+  icon: 'i-heroicons-clipboard-document-check',
+  to: '/dashboard/checkin',
+  tooltip: {
+    text: 'Checkin',
+    shortcuts: ['G', 'C']
+  }
+}, {
   id: 'settings',
   label: 'Settings',
   to: '/dashboard/settings',

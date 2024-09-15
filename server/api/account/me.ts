@@ -1,5 +1,4 @@
 import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import type { Account } from '~/types'
 
 export default eventHandler(async (event) => {
   const user = await serverSupabaseUser(event)

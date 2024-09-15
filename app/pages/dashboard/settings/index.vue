@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
-import type { Account } from '~/types/index.js'
 
 const client = useSupabaseClient()
 const user = useAuthUser()
@@ -15,15 +14,6 @@ const files = ref()
 
 loading.value = true
 const account = useAccount()
-// const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar('avatarSignedUrl'), {
-  watch: [state.avatarUrl]
-})
-
-loading.value = false
-
-const fileRef = ref<HTMLInputElement>()
-const isDeleteAccountModalOpen = ref(false)
 
 const state = reactive({
   name: account.value.name,
@@ -31,6 +21,16 @@ const state = reactive({
   username: account.value.username,
   avatarUrl: account.value.avatarUrl
 })
+
+// const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
+const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar(), {
+  watch: [state.avatarUrl]
+})
+
+loading.value = false
+
+const fileRef = ref<HTMLInputElement>()
+const isDeleteAccountModalOpen = ref(false)
 
 const toast = useToast()
 
@@ -65,7 +65,7 @@ async function onFileChange(e: Event) {
       })
     if (error) throw error
     else {
-      await supabase.from('account')
+      await client.from('account')
         .update({ avatarUrl: filePath })
         .eq('id', user.value.id)
     }
@@ -89,7 +89,7 @@ async function onSubmit(event: FormSubmitEvent<any>) {
 
   try {
     loading.value = true
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('account')
       .update({ name: state.name, email: state.email, username: state.username })
       .eq('id', user.value.id)
@@ -112,7 +112,7 @@ async function getAvatar() {
   if (avatarSignedUrl) return avatarSignedUrl
 
   try {
-    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
+    const { data, error } = await client.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
     else return data.signedUrl
   } catch (error) {
