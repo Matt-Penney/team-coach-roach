@@ -5,7 +5,7 @@ export default eventHandler(async (event): Promise<Account> => {
   const client = await serverSupabaseClient(event)
   const userId = getRouterParam(event, 'userId')
 
-  const { data, error } = await client.from('account').select('*').eq('id', userId!).single() // TO DO for each 'data' map to Account type
+  const { data, error } = await client.from('account').select('*').eq('id', userId!).single()
   if (error) throw error
 
   return new Account(
