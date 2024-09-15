@@ -3,8 +3,10 @@ const route = useRoute()
 const appConfig = useAppConfig()
 const { isHelpSlideoverOpen } = useDashboard()
 
+const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation(), { default: () => [] })
 const _account = await useAccount().setAccountState()
 
+provide('navigation', navigation)
 const links = [{
   id: 'home',
   label: 'Home',

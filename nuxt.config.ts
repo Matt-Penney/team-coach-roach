@@ -37,6 +37,7 @@ export default defineNuxtConfig({
   routeRules: {
     // Temporary workaround for prerender regression. see https://github.com/nuxt/nuxt/issues/27490
     '/': { prerender: true },
+    '/dashboard': { prerender: true },
     '/api/search.json': { prerender: true },
     '/docs': { redirect: '/docs/getting-started', prerender: false }
   },
@@ -73,7 +74,7 @@ export default defineNuxtConfig({
   supabase: { // TO DO use SSL https://supabase.com/docs/guides/database/connecting-to-postgres#connecting-with-drizzle
     redirectOptions: {
       login: '/login',
-      callback: '/confirm', // confirm redirect into dashboard, use cookies for this eventually too
+      callback: '/confirm',
       exclude: ['/', '/signup', '/docs', '/blog', '/pricing'],
       cookieRedirect: false // TO DO see if i can fix this for be 'true'
     },

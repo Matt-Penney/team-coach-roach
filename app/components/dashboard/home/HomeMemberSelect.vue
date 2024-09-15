@@ -8,7 +8,7 @@ const model = defineModel({
   type: Object as PropType<Member>,
   required: true
 })
-console.log('Model - ', model)
+// console.log('Model - ', model)
 
 function onMemberChange(member: Member, memberType: MemberType) {
   // Do something with data
@@ -53,7 +53,8 @@ async function getAvatar(avatarUrl) { // TO DO this kinda sucks, I dont want to 
     >
       <div class="flex items-center gap-3 min-w-0">
         <UAvatar
-          v-bind="model.avatar"
+          :src="model.avatarUrl"
+          :alt="model.name"
           size="md"
         />
         <div class="text-sm min-w-0">
