@@ -1,5 +1,6 @@
-import { serverSupabaseClient, serverSupabaseUser } from '#supabase/server'
-import type { Account, UserStatus } from '~/types'
+import { serverSupabaseClient } from '#supabase/server'
+import type { UserStatus } from '~/types'
+import type { Account } from '~~/utils/account'
 
 // const users: User[] = [{
 //   id: 1,
@@ -184,8 +185,6 @@ import type { Account, UserStatus } from '~/types'
 // }]
 
 export default eventHandler(async (event): Promise<Account[]> => {
-  const user = await serverSupabaseUser(event)
-
   const { q, statuses, /* locations, */sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' }
 
   const client = await serverSupabaseClient(event)
@@ -198,7 +197,7 @@ export default eventHandler(async (event): Promise<Account[]> => {
   }).filter((account: Account) => {
     if (!statuses?.length) return true
 
-    return statuses.includes(account.userStatus)
+    return statuses.includes(account.userStatus as UserStatus) // TO DO fix class to use enum
   })/* .filter((account: Account) => {
     if (!locations!.length) return true
 

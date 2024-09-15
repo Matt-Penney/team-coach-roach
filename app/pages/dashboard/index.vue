@@ -17,24 +17,10 @@ if (!page.value) {
 }
 
 loading.value = true
-const account = useAccount()
+const account = useAccount().getAccountState()
 
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar(account.value.avatarUrl))
 const member = ref<Member>(account.value)
 loading.value = false
-
-async function getAvatar(avatarUrl: string) { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
-  if (avatarSignedUrl) return avatarSignedUrl
-
-  try {
-    const { data, error } = await supabase.storage.from('avatars').createSignedUrl(avatarUrl, 60)
-    if (error) throw error
-    console.log(data.signedUrl)
-    return data.signedUrl
-  } catch (error) {
-    console.log('Error - ' + error)
-  }
-}
 
 // make a global function for this, partially done
 const logout = async () => {
@@ -47,7 +33,6 @@ const logout = async () => {
     alert(error.error_description || error.message)
   } finally {
     loading.value = false
-    clearNuxtData('account')
   }
 }
 
@@ -157,6 +142,7 @@ defineOgImage({
         <template #right>
           <!-- ~/components/dashboard/home/HomeMemberSelect.vue -->
           <DashboardHomeMemberSelect
+            v-if="member"
             v-model="member"
           />
         </template>

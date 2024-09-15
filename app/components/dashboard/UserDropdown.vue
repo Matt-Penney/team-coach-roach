@@ -8,11 +8,9 @@ const { metaSymbol } = useShortcuts()
 const loading = ref(true)
 
 loading.value = true
-const account = useAccount()
-// console.log('UserDropDown:13 - ', account.value)
-
-// const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar())
-const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
+const account = useAccount().getAccountState()
+// console.log('UserDropDown:12 - ', account)
+const avatarSignedUrl = ref('')
 loading.value = false
 
 const items = computed(() => [
@@ -58,13 +56,17 @@ const items = computed(() => [
   }]
 ])
 
+onMounted(() => {
+  getAvatar()
+})
+
 async function getAvatar() { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
   if (!account.value.avatarUrl) return
 
   try {
     const { data, error } = await supabase.storage.from('avatars').createSignedUrl(account.value.avatarUrl, 60)
     if (error) throw error
-    else return data.signedUrl
+    avatarSignedUrl.value = data.signedUrl
   } catch (error) {
     console.log('Error - ' + error)
   }

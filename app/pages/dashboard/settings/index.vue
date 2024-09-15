@@ -13,18 +13,13 @@ const loading = ref(true)
 const files = ref()
 
 loading.value = true
-const account = useAccount()
+const account = useAccount().getAccountState()
 
 const state = reactive({
   name: account.value.name,
   email: account.value.email,
   username: account.value.username,
   avatarUrl: account.value.avatarUrl
-})
-
-// const { data: avatarSignedUrl } = useNuxtData('avatarSignedUrl')
-const { data: avatarSignedUrl } = await useAsyncData('avatarSignedUrl', () => getAvatar(), {
-  watch: [state.avatarUrl]
 })
 
 loading.value = false

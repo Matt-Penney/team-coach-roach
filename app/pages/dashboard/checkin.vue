@@ -12,7 +12,7 @@ definePageMeta({
 const loading = ref(true)
 
 loading.value = true
-const account = useAccount()
+const account = useAccount().getAccountState()
 
 const state = reactive({
   weight: '',

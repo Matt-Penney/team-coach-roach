@@ -1,5 +1,3 @@
-import type { Account } from '~/types'
-
 export const useAuth = () => {
   const authUser = useSupabaseUser()
 
@@ -33,24 +31,8 @@ export const useAuth = () => {
     setUser(null)
     navigateTo('/')
   }
-
-  const me = async () => {
-    if (!authUser.value) {
-      try {
-        const data: any = await $fetch('/api/me')
-        setUser(data)
-      } catch (error) {
-        // console.log('useAuth:Ln40 - ', error)
-        setCookie(null)
-      }
-    }
-
-    return authUser
-  }
-
   return {
     login,
-    logout,
-    me
+    logout
   }
 }

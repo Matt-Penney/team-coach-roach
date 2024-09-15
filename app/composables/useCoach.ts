@@ -1,5 +1,5 @@
 export const useCoach = () => {
-  const account = useAccount()
+  const account = useAccount().getAccountState()
 
   return computed(() => {
     if (!account.value || !account.value.memberType) {

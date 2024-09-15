@@ -2,14 +2,13 @@
 import type { Member, MemberType } from '~/types'
 
 const client = useSupabaseClient()
-// const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
-const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [] })
+const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 
 const model = defineModel({
   type: Object as PropType<Member>,
   required: true
 })
-// console.log('Model - ', model)
+console.log('Model - ', model)
 
 function onMemberChange(member: Member, memberType: MemberType) {
   // Do something with data

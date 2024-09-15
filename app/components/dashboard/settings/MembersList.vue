@@ -57,7 +57,7 @@ async function getAvatar(avatarUrl) {
     >
       <div class="flex items-center gap-3 min-w-0">
         <UAvatar
-          :src="getAvatar(member.avatarUrl)"
+          :src="member.avatarUrl"
           :alt="member.name"
           size="md"
         />
