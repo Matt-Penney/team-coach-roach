@@ -2,7 +2,8 @@
 import type { Member } from '~/types'
 
 definePageMeta({
-  layout: 'dashboard'
+  layout: 'dashboard',
+  middleware: ['coach-only']
 })
 
 const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })

@@ -37,8 +37,23 @@ export interface Account {
   location?: string
 }
 
-export interface Member extends Account {
-  role?: MemberType // to remove eventually
+export interface Checkin {
+  checkin_id: number
+  account_id: number
+  weight: number
+  hasHitCardioTargets: boolean
+  hasHitNutritionalTargets: boolean
+  injuriesOrDiscomfort: string
+  sleepRating: string
+  nutritionRating: string
+  stressRating: string
+  notes: string
+  images: string[]
+  reviewed: boolean
+}
+
+export interface Member extends Account { // to remove eventually
+  role?: MemberType
 }
 
 // export type UserWithoutPassword = Omit<User, 'password'>

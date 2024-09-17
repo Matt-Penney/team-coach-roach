@@ -26,8 +26,9 @@ async function getAccountStoreDate() {
     headers: useRequestHeaders(['cookie'])
   }).then((data) => {
     response.value = data
-  }).catch(() => {
+  }).catch((error) => {
     // nothing
+    console.log('states.ts:32 - ', error)
   })
 
   return response

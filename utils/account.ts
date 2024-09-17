@@ -9,7 +9,7 @@ export class Account {
   name: string
   updated_at: string | null
   username: string | null
-  userStatus: string // TO DO make into enum
+  userStatus: string // TO DO make into enum (stuff is working currently, so this can remain)
 
   constructor(account_id: number, age: number | null, avatarUrl: string | null, email: string,
     id: string, memberType: string | null, mobilePhoneNumber: string | null, name: string,
@@ -28,7 +28,7 @@ export class Account {
   }
 }
 
-export class Member extends Account {
+export class Member extends Account { // idk if this is needed
   nope: string | null
   constructor(account_id: number, age: number | null, avatarUrl: string | null, email: string,
     id: string, memberType: string | null, mobilePhoneNumber: string | null, name: string,

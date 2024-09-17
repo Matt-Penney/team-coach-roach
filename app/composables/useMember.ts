@@ -1,8 +1,8 @@
-export const useCoach = async () => {
+export const useMember = async () => {
   const account = useAccount().getAccountState()
 
   if (!account.value) {
-    console.log('useCoach:5')
+    console.log('useMember:5')
     await useAccount().setAccountState()
   }
   return computed(() => {
@@ -10,6 +10,6 @@ export const useCoach = async () => {
       return false
     }
 
-    return account.value.memberType.includes('coach')
+    return account.value.memberType ? true : false
   })
 }

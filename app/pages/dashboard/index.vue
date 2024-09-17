@@ -8,7 +8,7 @@ const loading = ref(true)
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
+  middleware: ['member-only']
 })
 
 const { data: page } = await useAsyncData('dashboard', () => queryContent('/dashboard').findOne())

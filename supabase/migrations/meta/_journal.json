@@ -29,6 +29,20 @@
       "when": 1725995220035,
       "tag": "0003_daffy_switch",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1726598050295,
+      "tag": "0004_flawless_lake",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1726598529204,
+      "tag": "0005_pretty_rogue",
+      "breakpoints": true
     }
   ]
 }

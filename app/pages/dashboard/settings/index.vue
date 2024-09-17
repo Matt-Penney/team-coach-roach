@@ -6,7 +6,7 @@ const user = useAuthUser()
 
 definePageMeta({
   layout: 'dashboard', // might be able to pass it through props or something rather than defining this on EACH page
-  middleware: 'auth'
+  middleware: ['member-only']
 })
 
 const loading = ref(true)

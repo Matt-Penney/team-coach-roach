@@ -1,0 +1,1 @@
+ALTER TABLE "checkin" ALTER COLUMN "images" DROP DEFAULT;

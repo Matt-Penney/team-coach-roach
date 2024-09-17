@@ -5,7 +5,7 @@ const user = useAuthUser()
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
+  middleware: ['member-only']
 })
 
 const tabItems = [{
