@@ -188,7 +188,7 @@ export default eventHandler(async (event): Promise<Account[]> => {
   const { q, statuses, /* locations, */sort, order } = getQuery(event) as { q?: string, statuses?: UserStatus[], locations?: string[], sort?: 'name' | 'email', order?: 'asc' | 'desc' }
 
   const client = await serverSupabaseClient(event)
-  const { data } = await client.from('account').select('*') // TO DO for each 'data' map to Account type
+  const { data } = await client.from('account').select('*').returns<Account[]>() // TO DO for each 'data' map to Account type
 
   return data!.filter((account: Account) => {
     if (!q) return true

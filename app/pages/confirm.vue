@@ -11,6 +11,7 @@ const _redirectPath = useCookie(`${cookieName}-redirect-path`).value
 // TO DO make this into a nicer like loading overlay thing
 watch(user, () => {
   if (user.value) { // TO DO if is-member nav to dashboard otherwise go back to '/'
+    if (!useMember()) return navigateTo('/')
     // console.log('confirm.vue:14')
     // Clear cookie
     // useCookie(`${cookieName}-redirect-path`).value = null

@@ -2,8 +2,6 @@
 import { sub } from 'date-fns'
 import type { Period, Range, Member } from '~/types'
 
-const supabase = useSupabaseClient()
-const user = useAuthUser()
 const loading = ref(true)
 
 definePageMeta({
@@ -17,17 +15,14 @@ if (!page.value) {
 }
 
 loading.value = true
-const account = useAccount().getAccountState()
-
-const member = ref<Member>(account.value)
+const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
 loading.value = false
 
 // make a global function for this, partially done
 const logout = async () => {
   try {
     loading.value = true
-    const { error } = useAuth().logout()
-    if (error) throw error
+    useAuth().logout()
     navigateTo('/')
   } catch (error) {
     alert(error.error_description || error.message)
@@ -52,8 +47,9 @@ const items = [[{
   to: '/dashboard/checkin'
 }]]
 
-const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
 const period = ref<Period>('daily')
+const range = ref<Range>({ start: sub(new Date(), { days: 14 }), end: new Date() })
+const member = ref<Member>(members.value[0])
 
 useSeoMeta({
   title: page.value.title,
@@ -116,7 +112,6 @@ defineOgImage({
           </UDropdown>
 
           <UButton
-            v-if="user"
             label="Logout"
             color="gray"
             @click="logout"
@@ -142,8 +137,8 @@ defineOgImage({
         <template #right>
           <!-- ~/components/dashboard/home/HomeMemberSelect.vue -->
           <DashboardHomeMemberSelect
-            v-if="member"
             v-model="member"
+            :members="members"
           />
         </template>
       </UDashboardToolbar>
@@ -153,6 +148,7 @@ defineOgImage({
         <DashboardHomeChart
           :period="period"
           :range="range"
+          :member="member"
         />
 
         <div class="grid lg:grid-cols-2 lg:items-start gap-8 mt-8">

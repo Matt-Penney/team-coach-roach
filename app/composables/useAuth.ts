@@ -29,6 +29,7 @@ export const useAuth = () => {
     if (error) throw error
 
     setUser(null)
+    useAccount().clearAccountState()
     navigateTo('/')
   }
   return {

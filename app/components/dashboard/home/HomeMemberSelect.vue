@@ -1,37 +1,23 @@
 <script setup lang="ts">
-import type { Member, MemberType } from '~/types'
+import type { Member } from '~/types'
 
-const client = useSupabaseClient()
-const { data: members } = await useFetch<Member[]>('/api/members', { default: () => [], headers: useRequestHeaders(['cookie']) })
+const props = defineProps({
+  members: {
+    type: Object as PropType<Member[]>,
+    required: true
+  }
+})
 
 const model = defineModel({
   type: Object as PropType<Member>,
   required: true
 })
 // console.log('Model - ', model)
-
-function onMemberChange(member: Member, memberType: MemberType) {
-  // Do something with data
-  // TO DO add a URL param using the username and use that to drive the current dashboard showing a clients info
-  console.log(member, memberType)
-
-  // getAvatar(member.avatarUrl)
-}
-
-async function getAvatar(avatarUrl) { // TO DO this kinda sucks, I dont want to have to get this image each time it needed, rather just have a single signed URL to use in multiple places
-  try {
-    const { data, error } = await client.storage.from('avatars').createSignedUrl(avatarUrl, 60)
-    if (error) throw error
-    else return data.signedUrl
-  } catch (error) {
-    console.log('Error - ' + error)
-  }
-}
 </script>
 
 <template>
   <USelectMenu
-    v-if="members.length > 1"
+    v-if="props.members.length > 1"
     v-slot="{ open }"
     v-model="model"
     searchable
@@ -41,7 +27,6 @@ async function getAvatar(avatarUrl) { // TO DO this kinda sucks, I dont want to 
     :ui-menu="{ width: 'w-60', option: { base: 'capitalize' } }"
     :popper="{ placement: 'bottom-start' }"
     :search-attributes="['name']"
-    @update:model-value="onMemberChange(model, $event)"
   >
     <UButton
       :label="model.name"

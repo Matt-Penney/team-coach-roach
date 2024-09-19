@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '#ui/types'
+import { Checkin } from '~~/utils/checkin'
 
 const client = useSupabaseClient()
 const user = useAuthUser()
+const toast = useToast()
 
 definePageMeta({
   layout: 'dashboard', // might be able to pass it through props or something rather than defining this on EACH page
@@ -37,6 +39,34 @@ function validate(state: any): FormError[] {
 async function onSubmit(event: FormSubmitEvent<any>) {
   // Do something with data
   console.log(event.data, ' - onSubmit checkin')
+
+  try {
+    loading.value = true
+    // TO DO move to more global fuction location
+    const { error } = await client.from('checkin').insert({
+      account_id: account.value.account_id,
+      weight: state.weight,
+      hasHitCardioTargets: state.hasHitCardioTargets,
+      hasHitNutritionalTargets: state.hasHitNutritionalTargets,
+      injuriesOrDiscomfort: state.injuriesOrDiscomfort,
+      sleepRating: state.sleepRating,
+      nutritionRating: state.nutritionRating,
+      stressRating: state.stressRating,
+      notes: state.notes,
+      images: state.images
+    })
+
+    if (error) throw error
+    else {
+      toast.add({ title: 'Checkin uploaded successfully', icon: 'i-heroicons-check-circle', color: 'green' })
+      navigateTo('/dashboard')
+    }
+  } catch (error) {
+    console.log('Error - ', error)
+    toast.add({ title: 'Checkin upload failed', icon: 'i-heroicons-exclamation-circle', color: 'red' })
+  } finally {
+    loading.value = false
+  }
 }
 
 async function onFileChange(e: Event) {

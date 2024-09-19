@@ -13,9 +13,14 @@ export const useAccount = () => {
     return accountState
   }
 
+  const clearAccountState = () => [
+    clearNuxtState('account')
+  ]
+
   return {
     setAccountState,
-    getAccountState
+    getAccountState,
+    clearAccountState
   }
 }
 

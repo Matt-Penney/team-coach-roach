@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, format } from 'date-fns'
 import { VisXYContainer, VisLine, VisAxis, VisArea, VisCrosshair, VisTooltip } from '@unovis/vue'
-import type { Period, Range } from '~/types'
+import type { Member, Period, Range } from '~/types'
+import type { Checkin } from '~~/utils/checkin'
+import { CurveType } from '@unovis/ts';
 
 const cardRef = ref<HTMLElement | null>(null)
 
@@ -13,6 +15,10 @@ const props = defineProps({
   range: {
     type: Object as PropType<Range>,
     required: true
+  },
+  member: {
+    type: Object as PropType<Member>,
+    required: true
   }
 })
 
@@ -21,31 +27,57 @@ type DataRecord = {
   amount: number
 }
 
+watch(props, () => {
+  onMemberChange(props.member)
+})
+
+const checkins = await ref<Checkin[]>([])
+
+onMounted(() => {
+  onMemberChange(props.member)
+})
+async function onMemberChange(member: Member, event?: any) {
+  // TO DO add a URL param using the username and use that to drive the current dashboard showing a clients info
+  // console.log(member, event)
+  checkins.value = await $fetch(`/api/checkin/${props.member.account_id}`)
+  // console.log(checkins)
+}
+
 const { width } = useElementSize(cardRef)
 
 // We use `useAsyncData` here to have same random data on the client and server
 const { data } = await useAsyncData<DataRecord[]>(async () => {
+  if (!checkins.value) await onMemberChange(props.member)
+
   const dates = ({
     daily: eachDayOfInterval,
     weekly: eachWeekOfInterval,
     monthly: eachMonthOfInterval
   })[props.period](props.range)
 
-  const min = 1000
-  const max = 10000
-
-  return dates.map(date => ({ date, amount: Math.floor(Math.random() * (max - min + 1)) + min }))
+  let result = dates.map((date, _i) => ({
+    date,
+    amount: checkins.value.find(c => (format(c.created_at, 'yyyy-mm-dd') == (format(date, 'yyyy-mm-dd'))))?.weight
+  }))
+  // console.log('data - ', poop)
+  return result
 }, {
-  watch: [() => props.period, () => props.range],
+  watch: [() => props.period, () => props.range, () => props.member],
   default: () => []
 })
 
 const x = (_: DataRecord, i: number) => i
+// const x = (d: DataRecord) => d.date
 const y = (d: DataRecord) => d.amount
 
-const total = computed(() => data.value.reduce((acc: number, { amount }) => acc + amount, 0))
+// const total = computed(() => data.value.reduce((acc: number, { amount }) => acc + amount, 0))
+const mostRecentWeight = computed(() => {
+  if (checkins.value?.length > 0) return checkins.value[0].weight
 
-const formatNumber = new Intl.NumberFormat('en', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format
+  return 0.00
+})
+
+const formatNumber = new Intl.NumberFormat('en', { style: 'decimal', maximumFractionDigits: 1 }).format
 
 const formatDate = (date: Date): string => {
   return ({
@@ -77,7 +109,7 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
           Weight Chart
         </p>
         <p class="text-3xl text-gray-900 dark:text-white font-semibold">
-          {{ formatNumber(total) }}
+          {{ formatNumber(mostRecentWeight) }}
         </p>
       </div>
     </template>
@@ -91,6 +123,7 @@ const template = (d: DataRecord) => `${formatDate(d.date)}: ${formatNumber(d.amo
       <VisLine
         :x="x"
         :y="y"
+        fallback-value="0"
         color="rgb(var(--color-primary-DEFAULT))"
       />
       <VisArea
